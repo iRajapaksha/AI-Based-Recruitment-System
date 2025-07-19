@@ -1,4 +1,4 @@
-package com.ai_based_recruitment_system.recruitment_system;
+package com.ai_based_recruitment_system;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
