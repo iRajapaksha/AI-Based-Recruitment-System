@@ -1,10 +1,10 @@
-package com.ai_based_recruitment_system.recruitment_system;
+package com.recruitment_system.auth_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class RecruitmentSystemApplicationTests {
+class AuthServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
