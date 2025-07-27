@@ -5,15 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ec0605b1-d08d-4de5-b86e-9644817c97ab" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/service-registry/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-registry/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-registry/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-registry/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-registry/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-registry/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-registry/src/main/java/com/recruitment_system/service_registry/ServiceRegistryApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-registry/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-registry/src/test/java/com/recruitment_system/service_registry/ServiceRegistryApplicationTests.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobpost-service/src/main/java/com/recruitment_system/jobpost_service/JobPost.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobpost-service/src/main/java/com/recruitment_system/jobpost_service/JobPostController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobpost-service/src/main/java/com/recruitment_system/jobpost_service/JobPostRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobpost-service/src/main/java/com/recruitment_system/jobpost_service/JobPostRequestDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobpost-service/src/main/java/com/recruitment_system/jobpost_service/JobPostResponseDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobpost-service/src/main/java/com/recruitment_system/jobpost_service/JobPostService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobpost-service/src/main/java/com/recruitment_system/jobpost_service/OpenApiConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobpost-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/jobpost-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobpost-service/src/main/java/com/recruitment_system/jobpost_service/JobpostServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/jobpost-service/src/main/java/com/recruitment_system/jobpost_service/JobPostServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobpost-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/jobpost-service/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,20 +53,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "last_directory_selection": "D:/Projects/recruitment-system/src/main/java/com/ai_based_recruitment_system",
-    "last_opened_file_path": "D:/Projects/recruitment-system",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "advanced.settings"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_directory_selection&quot;: &quot;D:/Projects/recruitment-system/src/main/java/com/ai_based_recruitment_system&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Projects/recruitment-system&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;advanced.settings&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Projects\recruitment-system\src\main\java\com\ai_based_recruitment_system\dto" />
@@ -76,6 +77,21 @@
       <recent name="com.ai_based_recruitment_system.controller" />
       <recent name="com.ai_based_recruitment_system.repository" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="recruitment-system" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="recruitment-system" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
