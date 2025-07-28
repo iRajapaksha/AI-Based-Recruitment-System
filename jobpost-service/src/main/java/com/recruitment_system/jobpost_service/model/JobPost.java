@@ -1,4 +1,4 @@
-package com.recruitment_system.jobpost_service;
+package com.recruitment_system.jobpost_service.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

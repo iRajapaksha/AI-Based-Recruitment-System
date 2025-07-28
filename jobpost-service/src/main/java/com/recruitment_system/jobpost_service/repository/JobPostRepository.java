@@ -1,5 +1,6 @@
-package com.recruitment_system.jobpost_service;
+package com.recruitment_system.jobpost_service.repository;
 
+import com.recruitment_system.jobpost_service.model.JobPost;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

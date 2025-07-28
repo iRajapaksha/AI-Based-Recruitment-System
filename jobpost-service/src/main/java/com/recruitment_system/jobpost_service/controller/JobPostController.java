@@ -1,9 +1,14 @@
-package com.recruitment_system.jobpost_service;
+package com.recruitment_system.jobpost_service.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.recruitment_system.jobpost_service.model.JobPost;
+import com.recruitment_system.jobpost_service.dto.JobPostRequestDto;
+import com.recruitment_system.jobpost_service.dto.JobPostResponseDto;
+import com.recruitment_system.jobpost_service.service.JobPostService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+@PreAuthorize("hasRole('ORG')")
 @RequestMapping("/jobposts")
 @RestController
 public class JobPostController {
