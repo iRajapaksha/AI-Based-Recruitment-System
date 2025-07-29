@@ -6,7 +6,6 @@ import lombok.Setter;
 
 @Getter @Setter @Builder
 public class RegisterResponseDto {
-    private String username;
     private String email;
-    private String role;
+
 }

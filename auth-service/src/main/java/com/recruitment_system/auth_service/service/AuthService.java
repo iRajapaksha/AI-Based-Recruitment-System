@@ -1,14 +1,16 @@
 package com.recruitment_system.auth_service.service;
 
-import com.recruitment_system.auth_service.dto.AuthRequestDto;
-import com.recruitment_system.auth_service.dto.AuthResponseDto;
-import com.recruitment_system.auth_service.dto.RegisterRequestDto;
-import com.recruitment_system.auth_service.dto.RegisterResponseDto;
+import com.recruitment_system.auth_service.dto.*;
+import com.recruitment_system.auth_service.model.AuthProvider;
+import com.recruitment_system.auth_service.model.Role;
 import com.recruitment_system.auth_service.model.UserEntity;
 import com.recruitment_system.auth_service.repository.UserRepository;
-import com.recruitment_system.auth_service.security.JWTUtility;
+import com.recruitment_system.auth_service.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
+
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,24 +21,41 @@ public class AuthService {
 
         private final UserRepository userRepository;
         private final PasswordEncoder passwordEncoder;
-        private final JWTUtility jwtUtility;
+        private final JwtUtil jwtUtil;
+
+
 
         public RegisterResponseDto register(RegisterRequestDto request) {
                 if(userRepository.findByEmail(request.getEmail()).isPresent()){
                         throw new RuntimeException("User already exists with this email");
                 }
                 var user = UserEntity.builder()
-                        .username(request.getUsername())
                         .email(request.getEmail())
                         .password(passwordEncoder.encode(request.getPassword()))
-                        .role(request.getRole())
+                        .authProvider(AuthProvider.LOCAL)
+                        .role(Role.UNSET)
                         .build();
                 userRepository.save(user);
 
                 return RegisterResponseDto.builder()
-                        .username(user.getUsername())
                         .email(user.getEmail())
-                        .role(user.getRole())
+                        .build();
+        }
+
+        public AuthResponseDto setRole(RoleUpdateRequestDto req, Authentication auth){
+                String email = auth.getName();
+                UserEntity user = userRepository.findByEmail(email).orElseThrow(
+                        () -> new RuntimeException("User not found")
+                );
+
+                user.setRole(req.getRole());
+                userRepository.save(user);
+                String  token = jwtUtil.generateToken(user.getEmail(), user.getRole());
+
+
+
+                return AuthResponseDto.builder()
+                        .token(token)
                         .build();
         }
 
@@ -48,7 +67,12 @@ public class AuthService {
                         throw new RuntimeException("Invalid credentials");
                 }
 
-                var token = jwtUtility.generateToken(user.getEmail(), user.getRole());
+                 UsernamePasswordAuthenticationToken auth =
+                         new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
+
+                SecurityContextHolder.getContext().setAuthentication(auth);
+
+                var token = jwtUtil.generateToken(user.getEmail(),user.getRole());
                 return new AuthResponseDto(token);
         }
 }
