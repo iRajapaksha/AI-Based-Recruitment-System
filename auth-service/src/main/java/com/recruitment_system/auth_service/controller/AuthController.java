@@ -1,6 +1,7 @@
 package com.recruitment_system.auth_service.controller;
 
 import com.recruitment_system.auth_service.dto.*;
+import com.recruitment_system.auth_service.model.UserEntity;
 import com.recruitment_system.auth_service.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 
 @RestController
@@ -44,4 +44,9 @@ public class AuthController {
     public AuthResponseDto login(@RequestBody AuthRequestDto request) {
         return authService.login(request);
     }
+    @GetMapping("/verify")
+    public ResponseEntity<String> verifyUser(@RequestParam String token) {
+        return authService.verifyEmail(token);
+    }
+
 }

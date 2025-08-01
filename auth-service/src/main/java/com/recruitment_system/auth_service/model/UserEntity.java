@@ -23,5 +23,11 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "is_verified")
+    private boolean isVerified = false;
+
+    @Column(name = "verification_token")
+    private String verificationToken;
+
 
 }
