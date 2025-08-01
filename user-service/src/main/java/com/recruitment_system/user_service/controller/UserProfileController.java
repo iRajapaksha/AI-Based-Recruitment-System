@@ -7,7 +7,7 @@ import com.recruitment_system.user_service.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.core.Authentication;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,8 +27,12 @@ public class UserProfileController {
 
     }
 
-    @GetMapping("/me/{email}")
-    public ResponseEntity<UserProfileDto> getMyProfile(@PathVariable String email) {
+    @GetMapping("/me")
+    public ResponseEntity<UserProfileDto> getMyProfile( Authentication auth) {
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new SecurityException("User not authenticated");
+        }
+        String email = auth.getName();
         UserProfileDto userProfileDto = service.getProfile(email);
         return new ResponseEntity<>(userProfileDto, HttpStatus.OK);
     }

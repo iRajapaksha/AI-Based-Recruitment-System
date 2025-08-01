@@ -30,6 +30,9 @@ public class UserProfileService {
         profile.setAddress(request.getAddress());
         profile.setBio(request.getBio());
         profile.setOrganizationName(request.getOrganizationName());
+        profile.setProfilePic(request.getProfilePic());
+        profile.setEducation(request.getEducation());
+        profile.setQualification(request.getQualification());
 
         userProfileRepository.save(profile);
         return mapToDTO(profile);
@@ -42,7 +45,9 @@ public class UserProfileService {
     private UserProfileDto mapToDTO(UserProfile profile) {
         return UserProfileDto.builder()
                 .phone(profile.getPhone())
-                .role(profile.getRole())
+                .profilePic(profile.getProfilePic())
+                .qualification(profile.getQualification())
+                .education(profile.getEducation())
                 .bio(profile.getBio())
                 .organizationName(profile.getOrganizationName())
                 .address(profile.getAddress())
@@ -50,20 +55,15 @@ public class UserProfileService {
                 .email(profile.getEmail())
                 .build();
 
-//        dto.setEmail(profile.getEmail());
-//        dto.setFullName(profile.getFullName());
-//        dto.setPhone(profile.getPhone());
-//        dto.setAddress(profile.getAddress());
-//        dto.setBio(profile.getBio());
-//        dto.setRole(profile.getRole();
-//        dto.setOrganizationName(profile.getOrganizationName());
 
     }
 
     public UserProfileDto createProfile(UserProfileDto profile) {
         UserProfile profile1 = UserProfile.builder()
                 .phone(profile.getPhone())
-                .role(profile.getRole())
+                .profilePic(profile.getProfilePic())
+                .qualification(profile.getQualification())
+                .education(profile.getEducation())
                 .bio(profile.getBio())
                 .organizationName(profile.getOrganizationName())
                 .address(profile.getAddress())
