@@ -1,8 +1,7 @@
 package com.recruitment_system.user_service.controller;
 
-import com.recruitment_system.user_service.dto.UpdateProfileRequestDto;
+
 import com.recruitment_system.user_service.dto.UserProfileDto;
-import com.recruitment_system.user_service.model.UserProfile;
 import com.recruitment_system.user_service.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -20,10 +20,15 @@ public class UserProfileController {
     private final UserProfileService service;
 
     @PostMapping("/create")
-    public ResponseEntity<UserProfileDto> createProfile(@RequestBody UserProfileDto profile){
+    public ResponseEntity<String> createProfile(@RequestBody String email){
 
-        UserProfileDto userProfileDto = service.createProfile(profile);
-        return new ResponseEntity<>(userProfileDto,HttpStatus.OK);
+        try {
+            service.createProfile(email);
+            return ResponseEntity.ok("User profile created successfully.");
+        }
+        catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
 
     }
 
@@ -37,11 +42,20 @@ public class UserProfileController {
         return new ResponseEntity<>(userProfileDto, HttpStatus.OK);
     }
 
-    @PutMapping("/me")
-    public ResponseEntity<?> updateMyProfile(@PathVariable String email,
-                                             @RequestBody UpdateProfileRequestDto request) {
-        service.updateProfile(email, request);
-        return ResponseEntity.ok("Profile updated");
+    @PatchMapping("/me")
+    public ResponseEntity<?> updateMyProfile(Authentication auth,
+                                             @RequestBody Map<String,Object> updates) {
+
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new SecurityException("User not authenticated");
+        }
+        String email = auth.getName();
+        try {
+            service.updateProfile(email, updates);
+            return ResponseEntity.ok("User profile updated successfully.");
+        }catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
     }
 
     @GetMapping("/all")

@@ -1,6 +1,7 @@
 package com.recruitment_system.auth_service.service;
 
 import com.recruitment_system.auth_service.dto.*;
+import com.recruitment_system.auth_service.feign.UserInterface;
 import com.recruitment_system.auth_service.model.AuthProvider;
 import com.recruitment_system.auth_service.model.Role;
 import com.recruitment_system.auth_service.model.UserEntity;
@@ -31,6 +32,7 @@ public class AuthService {
         private final PasswordEncoder passwordEncoder;
         private final JwtUtil jwtUtil;
         private final JavaMailSender javaMailSender;
+        private final UserInterface userInterface;
 
 
 
@@ -49,6 +51,7 @@ public class AuthService {
                         .build();
                 userRepository.save(user);
                 sendVerificationEmail(user.getEmail(),token);
+                userInterface.createProfile(user.getEmail());
 
                 return RegisterResponseDto.builder()
                         .email(user.getEmail())
