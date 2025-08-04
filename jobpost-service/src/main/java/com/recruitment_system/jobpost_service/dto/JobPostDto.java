@@ -7,9 +7,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-public class JobPostResponseDto {
-    private Long postId;
+@Getter @Setter @AllArgsConstructor @NoArgsConstructor @Builder
+public class JobPostDto {
     private String companyName;
     private String location;
     private String workType;
@@ -22,6 +21,4 @@ public class JobPostResponseDto {
     private LocalDateTime deadline;
     private List<Skill> skills;
     private Long orgId;
-
-
 }

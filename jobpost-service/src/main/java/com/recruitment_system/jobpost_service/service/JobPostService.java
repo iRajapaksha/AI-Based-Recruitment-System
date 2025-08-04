@@ -1,90 +1,121 @@
 package com.recruitment_system.jobpost_service.service;
 
-import com.recruitment_system.jobpost_service.dto.JobPostRequestDto;
+import com.recruitment_system.jobpost_service.dto.JobPostDto;
 import com.recruitment_system.jobpost_service.dto.JobPostResponseDto;
 import com.recruitment_system.jobpost_service.model.JobPost;
+import com.recruitment_system.jobpost_service.model.Skill;
 import com.recruitment_system.jobpost_service.repository.JobPostRepository;
+import com.recruitment_system.jobpost_service.repository.SkillRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
-import java.time.LocalDateTime;
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class JobPostService {
     private final JobPostRepository jobPostRepository;
+    private final SkillRepository skillRepository;
 
-    public JobPostService(JobPostRepository jobPostRepository) {
-        this.jobPostRepository = jobPostRepository;
-    }
 
-    public JobPostResponseDto createJobPost(JobPostRequestDto request) {
-        JobPost jobPost =new  JobPost();
-        jobPost.setTitle(request.getTitle());
-        jobPost.setDescription(request.getDescription());
-        jobPost.setRequirements(request.getRequirements());
-        jobPost.setCreatedAt(LocalDateTime.now());
-        jobPost.setOrgId(request.getOrgId());
-        jobPost.setStatus(request.getStatus());
-
+    public JobPostResponseDto createJobPost(JobPostDto post) {
+        List<Skill> skillEntities = post.getSkills().stream()
+                .map(skill -> skillRepository.findByName(skill.getName())
+                        .orElseGet(() -> new Skill(skill.getName())))
+                .collect(Collectors.toList());
+        JobPost jobPost = JobPost.builder()
+                .companyName(post.getCompanyName())
+                .deadline(post.getDeadline())
+                .title(post.getTitle())
+                .requirements(post.getRequirements())
+                .employmentType(post.getEmploymentType())
+                .experienceLevel(post.getExperienceLevel())
+                .salary(post.getSalary())
+                .skills(skillEntities)
+                .description(post.getDescription())
+                .orgId(post.getOrgId())
+                .workType(post.getWorkType())
+                .location(post.getLocation())
+                .build();
         JobPost saved = jobPostRepository.save(jobPost);
 
-        return mapToResponse(saved);
+        return mapToResponseDto(saved);
     }
 
     public List<JobPostResponseDto> getAll() {
         return jobPostRepository.findAll()
                 .stream()
-                .map(this::mapToResponse)
+                .map(this::mapToResponseDto)
                 .collect(Collectors.toList());
     }
 
     public List<JobPostResponseDto> getByOrganization(Long orgId) {
         return jobPostRepository.findByOrgId(orgId)
                 .stream()
-                .map(this::mapToResponse)
+                .map(this::mapToResponseDto)
                 .collect(Collectors.toList());
     }
 
-    private JobPostResponseDto mapToResponse(JobPost jobPost) {
-        JobPostResponseDto jobPostResponseDto = new JobPostResponseDto();
-        jobPostResponseDto.setId(jobPost.getId());
-        jobPostResponseDto.setDescription(jobPost.getDescription());
-        jobPostResponseDto.setTitle(jobPost.getTitle());
-        jobPostResponseDto.setStatus(jobPost.getStatus());
-        jobPostResponseDto.setOrgId(jobPost.getOrgId());
-        jobPostResponseDto.setRequirements(jobPost.getRequirements());
-        jobPostResponseDto.setCreatedAt(jobPost.getCreatedAt());
 
-       return jobPostResponseDto;
-    }
+    public JobPostResponseDto deletePostById(Long id) {
+        JobPost post = jobPostRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Job post not found with ID: " + id));
 
-    public JobPost deletePostById(Long id) {
-        return jobPostRepository.findById(id).map(jobPost -> {
-            jobPostRepository.delete(jobPost);
-            return jobPost;
-        }).orElseThrow(() -> new RuntimeException("Job post not found with ID: " + id));
+            JobPostResponseDto dto = mapToResponseDto(post);
+            jobPostRepository.delete(post);
+            return dto;
     }
 
 
     @Transactional
-    public List<JobPost> deletePostByOrgId(Long orgId) {
-        List<JobPost> jobPosts = jobPostRepository.findByOrgId(orgId); // fetch for return
+    public List<JobPostResponseDto> deletePostByOrgId(Long orgId) {
+        List<JobPost> jobPosts = jobPostRepository.findByOrgId(orgId);// fetch for return
+        List<JobPostResponseDto> dto = jobPosts.stream()
+                .map(this::mapToResponseDto)
+                .collect(Collectors.toList());
         jobPostRepository.deleteAllByOrgId(orgId); // perform deletion
-        return jobPosts;
+        return dto;
     }
 
-    public JobPost updateJobPost(Long postId, JobPostRequestDto updatedPost) {
-        return jobPostRepository.findById(postId).map(existingPost -> {
-            existingPost.setTitle(updatedPost.getTitle());
-            existingPost.setDescription(updatedPost.getDescription());
-            existingPost.setRequirements(updatedPost.getRequirements());
-            existingPost.setStatus(updatedPost.getStatus());
-            existingPost.setOrgId(updatedPost.getOrgId());
-            return jobPostRepository.save(existingPost);
-        }).orElseThrow(() -> new RuntimeException("Job post not found with ID: " + postId));
+    public JobPostResponseDto updateJobPost(Long postId, Map<String,Object> updates) {
+        JobPost post = jobPostRepository.findById(postId)
+                .orElseThrow(()-> new RuntimeException("Job post not found"));
+        updates.forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(JobPost.class, key);
+            if (field != null) {
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, post, value);
+            }
+        });
+        jobPostRepository.save(post);
+        return mapToResponseDto(post);
     }
 
+    private JobPostResponseDto mapToResponseDto(JobPost post){
+        List<Skill> skillEntities = post.getSkills().stream()
+                .map(skill -> skillRepository.findByName(skill.getName())
+                        .orElseGet(() -> new Skill(skill.getName())))
+                .collect(Collectors.toList());
 
+        return JobPostResponseDto.builder()
+                .companyName(post.getCompanyName())
+                .deadline(post.getDeadline())
+                .title(post.getTitle())
+                .requirements(post.getRequirements())
+                .employmentType(post.getEmploymentType())
+                .experienceLevel(post.getExperienceLevel())
+                .salary(post.getSalary())
+                .skills(skillEntities)
+                .description(post.getDescription())
+                .orgId(post.getOrgId())
+                .workType(post.getWorkType())
+                .location(post.getLocation())
+                .postId(post.getId())
+                .build();
+    }
 }
