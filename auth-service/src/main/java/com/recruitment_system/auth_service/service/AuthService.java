@@ -7,19 +7,18 @@ import com.recruitment_system.auth_service.model.Role;
 import com.recruitment_system.auth_service.model.UserEntity;
 import com.recruitment_system.auth_service.repository.UserRepository;
 import com.recruitment_system.auth_service.security.JwtUtil;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import com.recruitment_system.event.SendVerificationEmailEvent;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,6 +32,7 @@ public class AuthService {
         private final JwtUtil jwtUtil;
         private final JavaMailSender javaMailSender;
         private final UserInterface userInterface;
+        private final KafkaTemplate<String,SendVerificationEmailEvent> kafkaTemplate;
 
 
 
@@ -50,7 +50,8 @@ public class AuthService {
                         .isVerified(false)
                         .build();
                 userRepository.save(user);
-                sendVerificationEmail(user.getEmail(),token);
+                kafkaTemplate.send("notification", new SendVerificationEmailEvent(user.getEmail(), token));
+               // sendVerificationEmail(user.getEmail(),token);
                 userInterface.createProfile(user.getEmail());
 
                 return RegisterResponseDto.builder()
@@ -58,18 +59,18 @@ public class AuthService {
                         .build();
         }
 
-        public void sendVerificationEmail(String email, String token){
-                String link = "http://localhost:8080/api/auth/verify?token=" + token;
-                SimpleMailMessage message = new SimpleMailMessage();
-               //  message.setFrom("senderemil");
-                message.setTo(email);
-                message.setSubject("AI Recruitment System Registration");
-                message.setText("Welcome to AI recruitment system. Click the link to verify your email: " + link);
-
-                javaMailSender.send(message);
-
-
-        }
+//        public void sendVerificationEmail(String email, String token){
+//                String link = "http://localhost:8080/api/auth/verify?token=" + token;
+//                SimpleMailMessage message = new SimpleMailMessage();
+//               //  message.setFrom("senderemil");
+//                message.setTo(email);
+//                message.setSubject("AI Recruitment System Registration");
+//                message.setText("Welcome to AI recruitment system. Click the link to verify your email: " + link);
+//
+//                javaMailSender.send(message);
+//
+//
+//        }
 
         public ResponseEntity<String> verifyEmail(String token){
                 Optional<UserEntity> userOptional = userRepository.findByVerificationToken(token);
@@ -100,6 +101,7 @@ public class AuthService {
 
                 return AuthResponseDto.builder()
                         .token(token)
+                        .email(user.getEmail())
                         .build();
         }
 
@@ -122,6 +124,6 @@ public class AuthService {
                 SecurityContextHolder.getContext().setAuthentication(auth);
 
                 var token = jwtUtil.generateToken(user.getEmail(),user.getRole());
-                return new AuthResponseDto(token);
+                return new AuthResponseDto(token, user.getEmail());
         }
 }
