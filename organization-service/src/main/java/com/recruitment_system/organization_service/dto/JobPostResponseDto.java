@@ -1,7 +1,7 @@
-package com.recruitment_system.jobpost_service.dto;
+package com.recruitment_system.organization_service.dto;
 
 
-import com.recruitment_system.jobpost_service.model.Skill;
+
 import lombok.*;
 
 import java.time.LocalDateTime;
