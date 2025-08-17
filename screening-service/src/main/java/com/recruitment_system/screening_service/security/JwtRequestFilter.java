@@ -1,4 +1,4 @@
-package com.recruitment_system.organization_service.security;
+package com.recruitment_system.screening_service.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

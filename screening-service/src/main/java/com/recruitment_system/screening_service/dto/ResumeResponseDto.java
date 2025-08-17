@@ -1,4 +1,4 @@
-package com.recruitment_system.resume_service.dto;
+package com.recruitment_system.screening_service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

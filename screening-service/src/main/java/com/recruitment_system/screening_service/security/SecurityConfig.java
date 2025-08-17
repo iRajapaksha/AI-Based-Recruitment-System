@@ -1,4 +1,4 @@
-package com.recruitment_system.organization_service.security;
+package com.recruitment_system.screening_service.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -18,8 +18,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws  Exception{
         http.csrf(csrf-> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/create","/users/create","/users/{email}").permitAll()
-                        .requestMatchers("/organizations/**").authenticated()
+                       // .requestMatchers("/users/create","/users/create","/users/{email}").permitAll()
+                        .requestMatchers("/screening/**").authenticated()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 

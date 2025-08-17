@@ -1,4 +1,4 @@
-package com.recruitment_system.organization_service.feign;
+package com.recruitment_system.screening_service.feign;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
