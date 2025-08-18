@@ -1,10 +1,12 @@
 package com.recruitment_system.jobpost_service.controller;
 
+import com.recruitment_system.jobpost_service.dto.ApiResponse;
 import com.recruitment_system.jobpost_service.model.JobPost;
 import com.recruitment_system.jobpost_service.dto.JobPostDto;
 import com.recruitment_system.jobpost_service.dto.JobPostResponseDto;
 import com.recruitment_system.jobpost_service.service.JobPostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
@@ -19,36 +21,65 @@ public class JobPostController {
 
 
     @PostMapping("/create")
-    public JobPostResponseDto create(@RequestBody JobPostDto request) {
-        return jobPostService.createJobPost(request);
+    public ResponseEntity<ApiResponse<JobPostResponseDto>> create(@RequestBody JobPostDto request) {
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,"Job post created",
+                        jobPostService.createJobPost(request))
+        );
     }
 
     @GetMapping("/get-all")
-    public List<JobPostResponseDto> getAll() {
-        return jobPostService.getAll();
+    public ResponseEntity<ApiResponse<List<JobPostResponseDto>>> getAll() {
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,"List of all job posts",
+                        jobPostService.getAll())
+        );
     }
 
-    @GetMapping("/org/{orgId}")
-    public List<JobPostResponseDto> getByOrganization(@PathVariable Long orgId) {
-        return jobPostService.getByOrganization(orgId);
+    @GetMapping("/get/org/{orgId}")
+    public ResponseEntity<ApiResponse<List<JobPostResponseDto>>> getByOrganization(@PathVariable Long orgId) {
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,"List of all job posts by organization",
+                        jobPostService.getByOrganization(orgId)
+        ));
+
     }
 
-    @DeleteMapping("/{postId}")
-    public JobPostResponseDto deleteJobPost(@PathVariable Long postId){
+    @DeleteMapping("/delete/{postId}")
+    public ResponseEntity<ApiResponse<JobPostResponseDto>> deleteJobPost(@PathVariable Long postId){
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,"Job post deleted.",
+                        jobPostService.deletePostById(postId)
+                ));
 
-        return jobPostService.deletePostById(postId);
     }
-    @DeleteMapping("/org/{orgId}")
-    public List<JobPostResponseDto> deletePostByOrgId(@PathVariable Long orgId){
+    @DeleteMapping("/delete/org/{orgId}")
+    public  ResponseEntity<ApiResponse<List<JobPostResponseDto>>> deletePostByOrgId(@PathVariable Long orgId){
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,"Delete all job posts by organization.",
+                        jobPostService.deletePostByOrgId(orgId)
+                ));
 
-        return jobPostService.deletePostByOrgId(orgId);
     }
 
-    @PatchMapping("/{postId}")
-    public JobPostResponseDto updateJobPost(@PathVariable Integer postId,
+    @PatchMapping("/update/{postId}")
+    public ResponseEntity<ApiResponse<JobPostResponseDto>> updateJobPost(@PathVariable Integer postId,
                                             @RequestBody Map<String,Object> updates) {
         Long id = Long.valueOf(postId);
-        return jobPostService.updateJobPost(id, updates);
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,"Update job post.",
+                        jobPostService.updateJobPost(id, updates)
+                ));
+
+    }
+    @GetMapping("/get/{postId}")
+    public ResponseEntity<ApiResponse<JobPostResponseDto>> getJobPostById(@PathVariable Long postId) {
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Retrieved job post by ID.",
+                        jobPostService.getJobPostById(postId)
+
+        ));
     }
 
 }

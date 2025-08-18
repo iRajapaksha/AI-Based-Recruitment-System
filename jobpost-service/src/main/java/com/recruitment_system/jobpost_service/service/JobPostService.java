@@ -96,6 +96,12 @@ public class JobPostService {
         return mapToResponseDto(post);
     }
 
+    public JobPostResponseDto getJobPostById(Long postId) {
+        JobPost post = jobPostRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Job post not found with ID: " + postId));
+        return mapToResponseDto(post);
+    }
+
     private JobPostResponseDto mapToResponseDto(JobPost post){
         List<Skill> skillEntities = post.getSkills().stream()
                 .map(skill -> skillRepository.findByName(skill.getName())
