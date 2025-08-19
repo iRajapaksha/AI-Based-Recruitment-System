@@ -1,4 +1,4 @@
-package com.recruitment_system.jobpost_service.dto;
+package com.recruitment_system.resume_service.dto;
 
 import lombok.*;
 
@@ -19,5 +19,8 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<T> error(String message) {
         return new ApiResponse<>(false, message, null);
+    }
+    public static <T> ApiResponse<T> error(String message, T data) {
+        return new ApiResponse<>(false, message, data);
     }
 }
