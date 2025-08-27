@@ -15,10 +15,12 @@ public class JobPostResponseDto {
     private String workType;
     private String experienceLevel;
     private String employmentType;
-    private String salary;
+    private double minSalary;
+    private double maxSalary;
     private String title;
     private String description;
     private String requirements;
+    private LocalDateTime createdAt;
     private LocalDateTime deadline;
     private List<Skill> skills;
     private Long orgId;

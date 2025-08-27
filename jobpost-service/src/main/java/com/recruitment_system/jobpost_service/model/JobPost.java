@@ -1,8 +1,6 @@
 package com.recruitment_system.jobpost_service.model;
-
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +16,12 @@ public class JobPost {
     private String workType;
     private String experienceLevel;
     private String employmentType;
-    private String salary;
+    private double minSalary;
+    private double maxSalary;
     private String title;
     private String description;
     private String requirements;
+    private LocalDateTime createdAt;
     private LocalDateTime deadline;
     private Long orgId;
 

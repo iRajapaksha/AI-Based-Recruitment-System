@@ -34,10 +34,13 @@ public class JobPostDto {
             message = "Employment type must be Full-time, Part-time, Contract, or Internship")
     private String employmentType;
 
-    @NotBlank(message = "Salary is required")
-    @Pattern(regexp = "^[0-9]+(\\.[0-9]{1,2})?(-[0-9]+(\\.[0-9]{1,2})?)?$",
-            message = "Salary must be a number or a range, e.g. 50000 or 50000-70000")
-    private String salary;
+    @NotBlank(message = "Minimum salary is required")
+    @PositiveOrZero(message = "Minimum salary must be >= 0")
+    private double minSalary;
+
+    @NotBlank(message = "Maximum salary is required")
+    @PositiveOrZero(message = "Maximum salary must be >= 0")
+    private double maxSalary;
 
     @NotBlank(message = "Job title is required")
     @Size(max = 150, message = "Job title cannot exceed 150 characters")

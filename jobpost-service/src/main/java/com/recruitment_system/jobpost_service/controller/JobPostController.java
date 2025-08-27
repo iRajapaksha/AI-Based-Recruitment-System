@@ -5,6 +5,7 @@ import com.recruitment_system.jobpost_service.model.JobPost;
 import com.recruitment_system.jobpost_service.dto.JobPostDto;
 import com.recruitment_system.jobpost_service.dto.JobPostResponseDto;
 import com.recruitment_system.jobpost_service.service.JobPostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class JobPostController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<JobPostResponseDto>> create(@RequestBody JobPostDto request) {
+    public ResponseEntity<ApiResponse<JobPostResponseDto>> create(@Valid @RequestBody JobPostDto request) {
         return ResponseEntity.ok(
                 new ApiResponse<>(true,"Job post created",
                         jobPostService.createJobPost(request))

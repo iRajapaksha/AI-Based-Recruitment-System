@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,7 +36,9 @@ public class JobPostService {
                 .requirements(post.getRequirements())
                 .employmentType(post.getEmploymentType())
                 .experienceLevel(post.getExperienceLevel())
-                .salary(post.getSalary())
+                .minSalary(post.getMinSalary())
+                .maxSalary(post.getMaxSalary())
+                .createdAt(LocalDateTime.now())
                 .skills(skillEntities)
                 .description(post.getDescription())
                 .orgId(post.getOrgId())
@@ -115,7 +118,9 @@ public class JobPostService {
                 .requirements(post.getRequirements())
                 .employmentType(post.getEmploymentType())
                 .experienceLevel(post.getExperienceLevel())
-                .salary(post.getSalary())
+                .minSalary(post.getMinSalary())
+                .maxSalary(post.getMaxSalary())
+                .createdAt(post.getCreatedAt())
                 .skills(skillEntities)
                 .description(post.getDescription())
                 .orgId(post.getOrgId())
