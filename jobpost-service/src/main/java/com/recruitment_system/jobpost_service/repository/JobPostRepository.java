@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface JobPostRepository extends JpaRepository<JobPost,Long> {
@@ -15,5 +16,8 @@ public interface JobPostRepository extends JpaRepository<JobPost,Long> {
     @Transactional
     @Query("DELETE FROM JobPost jp WHERE jp.orgId = :orgId")
     int deleteAllByOrgId(@Param("orgId") Long orgId);
+
+    List<JobPost> findByDeadlineBeforeAndIsActive(LocalDateTime now, Boolean isActive);
+
 
 }

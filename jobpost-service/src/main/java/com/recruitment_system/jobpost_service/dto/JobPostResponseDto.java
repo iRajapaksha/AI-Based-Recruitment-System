@@ -20,6 +20,7 @@ public class JobPostResponseDto {
     private String title;
     private String description;
     private String requirements;
+    private boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime deadline;
     private List<Skill> skills;

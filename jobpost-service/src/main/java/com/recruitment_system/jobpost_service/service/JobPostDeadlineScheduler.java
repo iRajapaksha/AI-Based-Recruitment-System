@@ -1,10 +1,13 @@
 package com.recruitment_system.jobpost_service.service;
 
+import com.recruitment_system.event.PostDeadlineEvent;
+import com.recruitment_system.jobpost_service.model.JobPost;
 import com.recruitment_system.jobpost_service.repository.JobPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -14,8 +17,18 @@ public class JobPostDeadlineScheduler {
     private final JobPostDeadlineProducer jobPostDeadlineProducer;
 
 
-    @Scheduled(fixedRate = 60000) // Check every minute
+    @Scheduled(fixedRate = 60000*60) // Check every hour
     private void checkDealines(){
-        List<Long> expiredJobPostIds = jobPostRepository.findExpiredJobPostIds();
+        List<Long> expiredJobPostIds = jobPostRepository.findByDeadlineBeforeAndIsActive(LocalDateTime.now(),true)
+                .stream()
+                .map(JobPost::getId)
+                .toList();
+        for(Long jobPostId : expiredJobPostIds){
+        PostDeadlineEvent event = new PostDeadlineEvent(jobPostId);
+        jobPostDeadlineProducer.sendDeadlineEvent(event);
+            JobPost jobPost = jobPostRepository.findById(jobPostId).orElseThrow();
+            jobPost.setIsActive(false); // mark as inactive
+            jobPostRepository.save(jobPost);
+        }
     }
 }

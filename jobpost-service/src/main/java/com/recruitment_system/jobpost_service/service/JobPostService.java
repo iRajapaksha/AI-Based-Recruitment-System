@@ -44,6 +44,7 @@ public class JobPostService {
                 .orgId(post.getOrgId())
                 .workType(post.getWorkType())
                 .location(post.getLocation())
+                .isActive(true)
                 .build();
         JobPost saved = jobPostRepository.save(jobPost);
 
@@ -127,6 +128,7 @@ public class JobPostService {
                 .workType(post.getWorkType())
                 .location(post.getLocation())
                 .postId(post.getId())
+                .isActive(post.getIsActive())
                 .build();
     }
 }

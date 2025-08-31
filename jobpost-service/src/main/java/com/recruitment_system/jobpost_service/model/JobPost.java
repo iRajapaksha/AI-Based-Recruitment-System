@@ -18,6 +18,7 @@ public class JobPost {
     private String employmentType;
     private double minSalary;
     private double maxSalary;
+    private Boolean isActive;
     private String title;
     private String description;
     private String requirements;
