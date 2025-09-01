@@ -16,13 +16,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ScreeningResult {
+public class CandidateResult {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long resumeId;
     private Long jobPostId;
-    private Double score;
-    private Integer rank;
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private Long resumeId;
+    private String candidate_name;
+    private String email;
+    private String match_analysis;
+    private double score;
 }

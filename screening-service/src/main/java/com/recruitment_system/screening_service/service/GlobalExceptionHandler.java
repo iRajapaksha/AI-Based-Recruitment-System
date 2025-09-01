@@ -1,6 +1,7 @@
 package com.recruitment_system.screening_service.service;
 
 
+import com.recruitment_system.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
