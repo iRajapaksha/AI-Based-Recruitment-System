@@ -1,5 +1,7 @@
 package com.recruitment_system.screening_service.controller;
 
+import com.recruitment_system.dto.ApiResponse;
+import com.recruitment_system.screening_service.dto.CandidateResultDto;
 import com.recruitment_system.screening_service.model.CandidateResult;
 import com.recruitment_system.screening_service.service.ScreeningService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,11 @@ public class ScreeningController {
     @GetMapping("/job-post/{jobPostId}")
     public List<CandidateResult> getRankedList(@PathVariable Long jobPostId) {
         return screeningService.getRankedResults(jobPostId);
+    }
+
+    @PostMapping("/run/{postId}")
+    public ResponseEntity<ApiResponse<List<CandidateResultDto>>> runScreeningManually(@PathVariable Long postId) {
+        return ResponseEntity.ok(new ApiResponse<>(true,"Screening run successfully",screeningService.runScreeningManually(postId)));
     }
 }
 

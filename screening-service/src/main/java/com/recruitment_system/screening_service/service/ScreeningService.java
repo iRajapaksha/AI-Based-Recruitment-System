@@ -53,6 +53,34 @@ public class ScreeningService {
 
     }
 
+    public List<CandidateResultDto> runScreeningManually(Long postId) {
+        var jobPost = jobPostInterface.getJobPostById(postId).getBody().getData();
+        var resumes = resumeInterface.getAllByPostId(postId).getBody().getData();
+  try{
+      List<CandidateResultDto> aiResults = aiScreeningClient.screenedResumes(jobPost, resumes);
+      for(CandidateResultDto aiResult : aiResults){
+          CandidateResult result = CandidateResult.builder()
+                  .resumeId(aiResult.getResumeId())
+                  .candidate_name(aiResult.getCandidate_name())
+                  .email(aiResult.getEmail())
+                  .score(aiResult.getScore())
+                  .jobPostId(postId)
+                  .match_analysis(aiResult.getMatch_analysis())
+                  .build();
+          resultRepository.save(result);
+      }
+      return aiResults;
+
+  }catch (Exception ex){
+        System.out.println("Error processing screening for job post ID " + postId + ": " + ex.getMessage());
+        return new ArrayList<>();
+
+  }
+
+
+
+    }
+
     public List<CandidateResult> getRankedResults(Long jobPostId) {
         return resultRepository.findByJobPostIdOrderByRankAsc(jobPostId);
     }
