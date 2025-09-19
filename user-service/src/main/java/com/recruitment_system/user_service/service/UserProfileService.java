@@ -4,6 +4,8 @@ import com.recruitment_system.user_service.dto.UserProfileDto;
 import com.recruitment_system.user_service.model.UserProfile;
 import com.recruitment_system.user_service.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
@@ -11,9 +13,10 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Service @Slf4j
 @RequiredArgsConstructor
 public class UserProfileService {
+
     private final UserProfileRepository userProfileRepository;
 
     public UserProfileDto getProfile(String email) {
@@ -33,13 +36,21 @@ public class UserProfileService {
                 ReflectionUtils.setField(field, profile, value);
             }
         });
-
+        System.out.println("Email saved: " + profile.getEmail());
         userProfileRepository.save(profile);
+        log.info("Updated profile for {}", email);
         return mapToDTO(profile);
     }
 
     public List<UserProfileDto> getAllUsers() {
         return userProfileRepository.findAll().stream().map(this::mapToDTO).toList();
+    }
+    public void createProfile(String email) {
+        UserProfile profile1 = UserProfile.builder()
+                .email(email)
+                .build();
+        userProfileRepository.save(profile1);
+        log.info("Created profile for {}", email);
     }
 
     private UserProfileDto mapToDTO(UserProfile profile) {
@@ -58,15 +69,5 @@ public class UserProfileService {
                 .jobTitle(profile.getJobTitle())
                 .location(profile.getLocation())
                 .build();
-
-
-    }
-
-    public void createProfile(String email) {
-        UserProfile profile1 = UserProfile.builder()
-                .email(email)
-                .build();
-        userProfileRepository.save(profile1);
-  //      return profile;
     }
 }

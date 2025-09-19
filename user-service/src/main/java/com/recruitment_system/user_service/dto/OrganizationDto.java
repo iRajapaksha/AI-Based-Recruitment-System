@@ -1,4 +1,4 @@
-package com.recruitment_system.organization_service.dto;
+package com.recruitment_system.user_service.dto;
 
 import lombok.*;
 

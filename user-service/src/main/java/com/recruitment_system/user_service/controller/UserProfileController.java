@@ -1,6 +1,7 @@
 package com.recruitment_system.user_service.controller;
 
 
+import com.recruitment_system.user_service.dto.ApiResponse;
 import com.recruitment_system.user_service.dto.UserProfileDto;
 import com.recruitment_system.user_service.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
@@ -20,42 +21,31 @@ public class UserProfileController {
     private final UserProfileService service;
 
     @PostMapping("/create")
-    public ResponseEntity<String> createProfile(@RequestBody String email){
-
-        try {
+    public ResponseEntity<ApiResponse<Void>> createProfile(@RequestBody String email){
             service.createProfile(email);
-            return ResponseEntity.ok("User profile created successfully.");
-        }
-        catch (Exception ex){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-        }
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse<>(true, "User profile created successfully.", null));
+
 
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserProfileDto> getMyProfile( Authentication auth) {
-        if (auth == null || !auth.isAuthenticated()) {
-            throw new SecurityException("User not authenticated");
-        }
+    public ResponseEntity<ApiResponse<UserProfileDto>> getMyProfile( Authentication auth) {
         String email = auth.getName();
         UserProfileDto userProfileDto = service.getProfile(email);
-        return new ResponseEntity<>(userProfileDto, HttpStatus.OK);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Profile fetched successfully", userProfileDto));
+
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<?> updateMyProfile(Authentication auth,
+    public ResponseEntity<ApiResponse<UserProfileDto>> updateMyProfile(Authentication auth,
                                              @RequestBody Map<String,Object> updates) {
 
-        if (auth == null || !auth.isAuthenticated()) {
-            throw new SecurityException("User not authenticated");
-        }
+
         String email = auth.getName();
-        try {
-            service.updateProfile(email, updates);
-            return ResponseEntity.ok("User profile updated successfully.");
-        }catch (Exception ex){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-        }
+        UserProfileDto profile = service.updateProfile(email, updates);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Profile updated successfully", profile));
+
     }
 
     @GetMapping("/all")
