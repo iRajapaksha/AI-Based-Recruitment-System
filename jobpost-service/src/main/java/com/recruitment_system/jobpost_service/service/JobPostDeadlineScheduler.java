@@ -17,12 +17,13 @@ public class JobPostDeadlineScheduler {
     private final JobPostDeadlineProducer jobPostDeadlineProducer;
 
 
-    @Scheduled(fixedRate = 60000*60) // Check every hour
-    private void checkDealines(){
+    @Scheduled(fixedRate = 60000) // Check every minute
+    public void checkDealines(){
         List<Long> expiredJobPostIds = jobPostRepository.findByDeadlineBeforeAndIsActive(LocalDateTime.now(),true)
                 .stream()
                 .map(JobPost::getId)
                 .toList();
+        System.out.println("Expired job posts: " + expiredJobPostIds);
         for(Long jobPostId : expiredJobPostIds){
         PostDeadlineEvent event = new PostDeadlineEvent(jobPostId);
         jobPostDeadlineProducer.sendDeadlineEvent(event);

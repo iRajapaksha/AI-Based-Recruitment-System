@@ -34,11 +34,9 @@ public class JobPostDto {
             message = "Employment type must be Full-time, Part-time, Contract, or Internship")
     private String employmentType;
 
-    @NotBlank(message = "Minimum salary is required")
     @PositiveOrZero(message = "Minimum salary must be >= 0")
     private double minSalary;
 
-    @NotBlank(message = "Maximum salary is required")
     @PositiveOrZero(message = "Maximum salary must be >= 0")
     private double maxSalary;
 
