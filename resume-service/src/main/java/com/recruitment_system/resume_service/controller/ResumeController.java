@@ -4,6 +4,7 @@ import com.recruitment_system.resume_service.dto.ApiResponse;
 import com.recruitment_system.resume_service.dto.ResumeDto;
 import com.recruitment_system.resume_service.dto.ResumeResponseDto;
 import com.recruitment_system.resume_service.service.ResumeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class ResumeController {
     private final ResumeService resumeService;
 
     @PostMapping("/save")
-    public ResponseEntity<ApiResponse<ResumeResponseDto>> saveResume(@RequestBody ResumeDto dto){
+    public ResponseEntity<ApiResponse<ResumeResponseDto>> saveResume(@Valid @RequestBody ResumeDto dto){
         return ResponseEntity.ok(
                 new ApiResponse<>(true,"Resume saved.",
                         resumeService.saveResume(dto))
@@ -49,5 +50,4 @@ public class ResumeController {
         );
 
     }
-
 }
