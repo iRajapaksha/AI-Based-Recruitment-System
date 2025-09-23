@@ -3,7 +3,7 @@ package com.recruitment_system.auth_service.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum Role {
-    APPLICANT, ORG, ADMIN,UNSET;
+    ORG, ADMIN,USER;
 
     @JsonCreator
     public static Role fromString(String value) {

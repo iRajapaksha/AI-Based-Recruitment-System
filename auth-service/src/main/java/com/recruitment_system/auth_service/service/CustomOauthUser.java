@@ -4,7 +4,6 @@ import com.recruitment_system.auth_service.model.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -24,11 +23,9 @@ public class CustomOauthUser implements OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(() -> "ROLE_" + (user.getRole() == null ? "UNSET" : user.getRole().name()));
+        return List.of(() -> "ROLE_" + (user.getRole() == null ? "USER" : user.getRole().name()));
 
     }
-
-
     @Override
     public String getName() {
         return user.getEmail();

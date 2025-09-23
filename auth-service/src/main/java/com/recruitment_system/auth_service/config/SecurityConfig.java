@@ -1,5 +1,6 @@
 package com.recruitment_system.auth_service.config;
 
+import com.recruitment_system.auth_service.feign.UserInterface;
 import com.recruitment_system.auth_service.repository.UserRepository;
 import com.recruitment_system.auth_service.security.JwtAuthenticationFilter;
 import com.recruitment_system.auth_service.security.JwtUtil;
@@ -30,6 +31,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final UserInterface userInterface;
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -61,7 +63,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler() {
-        return new OAuth2LoginSuccessHandler(userRepository,jwtUtil);
+        return new OAuth2LoginSuccessHandler(userRepository,jwtUtil,userInterface);
     }
     @Bean
     public PasswordEncoder passwordEncoder() {

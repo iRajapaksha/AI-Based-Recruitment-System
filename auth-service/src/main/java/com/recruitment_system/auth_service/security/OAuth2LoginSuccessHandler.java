@@ -1,5 +1,6 @@
 package com.recruitment_system.auth_service.security;
 
+import com.recruitment_system.auth_service.feign.UserInterface;
 import com.recruitment_system.auth_service.model.AuthProvider;
 import com.recruitment_system.auth_service.model.Role;
 import com.recruitment_system.auth_service.model.UserEntity;
@@ -16,18 +17,19 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.UUID;
 
-
+@RequiredArgsConstructor
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-
+    private  UserInterface userInterface;
     private  UserRepository userRepository;
-
     private JwtUtil jwtService;
 
-    public OAuth2LoginSuccessHandler(UserRepository userRepository,JwtUtil jwtUtil) {
+    public OAuth2LoginSuccessHandler(UserRepository userRepository,JwtUtil jwtUtil,UserInterface userInterface) {
         this.userRepository = userRepository;
         this.jwtService =jwtUtil;
+        this.userInterface = userInterface;
     }
 
 
@@ -37,22 +39,23 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                                         Authentication authentication) throws IOException {
         OAuth2User user = (OAuth2User) authentication.getPrincipal();
         String email = user.getAttribute("email");
+        String token = UUID.randomUUID().toString();
         Role role = user.getAttribute("role");
         if(userRepository.findByEmail(email).isEmpty()){
             UserEntity newUser = UserEntity.builder()
                     .email(email)
-                    .role(Role.UNSET)
+                    .role(Role.USER)
+                    .isVerified(true)
                     .authProvider(AuthProvider.GOOGLE)
                     .build();
             userRepository.save(newUser);
+            userInterface.createProfile(newUser.getEmail());
+
         }
 
-        // Generate your custom JWT
         String jwt = jwtService.generateToken(email,role);
 
-        // Optionally store user to DB
-
         // Redirect to frontend with JWT (or store in cookie)
-        response.sendRedirect("http://your-frontend-app.com?token=" + jwt);
+        response.sendRedirect("http://localhost:3000/token=" + jwt);
     }
 }

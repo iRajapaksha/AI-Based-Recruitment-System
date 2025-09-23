@@ -38,7 +38,7 @@ public class AuthService {
 
         public RegisterResponseDto register(RegisterRequestDto request) {
                 if(userRepository.findByEmail(request.getEmail()).isPresent()){
-                        throw new RuntimeException("User already exists with this email");
+                        throw new RuntimeException("User already exists with this email.Please verify your email. Check inbox.");
                 }
                 String token = UUID.randomUUID().toString(); // or use JWT
 
@@ -46,7 +46,8 @@ public class AuthService {
                         .email(request.getEmail())
                         .password(passwordEncoder.encode(request.getPassword()))
                         .authProvider(AuthProvider.LOCAL)
-                        .role(Role.UNSET)
+                        .verificationToken(token)
+                        .role(Role.USER)
                         .isVerified(false)
                         .build();
                 userRepository.save(user);
@@ -59,32 +60,20 @@ public class AuthService {
                         .build();
         }
 
-//        public void sendVerificationEmail(String email, String token){
-//                String link = "http://localhost:8080/api/auth/verify?token=" + token;
-//                SimpleMailMessage message = new SimpleMailMessage();
-//               //  message.setFrom("senderemil");
-//                message.setTo(email);
-//                message.setSubject("AI Recruitment System Registration");
-//                message.setText("Welcome to AI recruitment system. Click the link to verify your email: " + link);
-//
-//                javaMailSender.send(message);
-//
-//
-//        }
 
-        public ResponseEntity<String> verifyEmail(String token){
+        public String verifyEmail(String token){
                 Optional<UserEntity> userOptional = userRepository.findByVerificationToken(token);
 
                 if (userOptional.isEmpty()) {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token");
+                        return "Invalid or expired token";
                 }
 
                 UserEntity user = userOptional.get();
                 user.setVerified(true);
                 user.setVerificationToken(null); // invalidate token
                 userRepository.save(user);
-
-                return ResponseEntity.ok("Email verified successfully! You can now log in.");
+                // for successful verification.add redirection to login page
+                return "Email verified successfully! You can now log in.";
         }
 
         public AuthResponseDto setRole(RoleUpdateRequestDto req, Authentication auth){
@@ -112,10 +101,10 @@ public class AuthService {
                 if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
                         throw new RuntimeException("Invalid credentials");
                 }
-                // Use when deployed to a server
-//                if (!user.isVerified()) {
-//                        throw new RuntimeException("Please verify your email before logging in.");
-//                }
+                // Use when deployed to a server. put password check inside verification
+                if (!user.isVerified()) {
+                        throw new RuntimeException("Please verify your email before log in.");
+                }
 
 
                 UsernamePasswordAuthenticationToken auth =

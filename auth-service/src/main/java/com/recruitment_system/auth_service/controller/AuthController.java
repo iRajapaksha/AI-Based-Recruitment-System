@@ -3,6 +3,7 @@ package com.recruitment_system.auth_service.controller;
 import com.recruitment_system.auth_service.dto.*;
 import com.recruitment_system.auth_service.model.UserEntity;
 import com.recruitment_system.auth_service.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,9 +23,10 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponseDto> register(@RequestBody RegisterRequestDto request) {
-       RegisterResponseDto register = authService.register(request);
-        return new ResponseEntity<>(register,HttpStatus.OK);
+    public ResponseEntity<ApiResponse<RegisterResponseDto>> register(@Valid @RequestBody RegisterRequestDto request) {
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "User registered successfully.", authService.register(request))
+        );
     }
 
     @PostMapping("/set-role")
@@ -41,12 +43,16 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public AuthResponseDto login(@RequestBody AuthRequestDto request) {
-        return authService.login(request);
+    public ResponseEntity<ApiResponse<AuthResponseDto>> login(@RequestBody AuthRequestDto request) {
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "User login successfully.", authService.login(request))
+        );
     }
-    @GetMapping("/verify")
-    public ResponseEntity<String> verifyUser(@RequestParam String token) {
-        return authService.verifyEmail(token);
+    @GetMapping("/verify/{token}")
+    public ResponseEntity<ApiResponse<String>> verifyUser(@PathVariable String token) {
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Email verified successfully.", authService.verifyEmail(token))
+        );
     }
 
 }
