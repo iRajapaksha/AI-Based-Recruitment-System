@@ -7,8 +7,12 @@ import com.recruitment_system.jobpost_service.dto.JobPostResponseDto;
 import com.recruitment_system.jobpost_service.service.JobPostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +39,32 @@ public class JobPostController {
         return ResponseEntity.ok(
                 new ApiResponse<>(true,"List of all job posts",
                         jobPostService.getAll())
+        );
+    }
+
+    @GetMapping("/get/filter")
+    public ResponseEntity<ApiResponse<List<JobPostResponseDto>>> filterJobPosts(
+            @RequestParam(required = false) String jobTitle,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String experienceLevel,
+            @RequestParam(required = false) String workType,
+            @RequestParam(required = false, defaultValue = "id") String orderBy,
+            @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
+            @RequestParam(required = false) String datePosted,
+            @RequestParam(required = false, defaultValue = "1") int pageNo,
+            @RequestParam(required = false, defaultValue = "10") int pageSize
+    ) {
+        Sort sort = null;
+        if(sortDirection.equalsIgnoreCase("ASC")){
+            sort = Sort.by(orderBy).ascending();
+        } else{
+            sort = Sort.by(orderBy).descending();
+        }
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize,sort);
+        List<JobPostResponseDto> filteredPosts = jobPostService.filterJobPosts(jobTitle,
+                location, experienceLevel, workType, orderBy, datePosted,pageable);
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Filtered job posts", filteredPosts)
         );
     }
 

@@ -8,9 +8,10 @@ import com.recruitment_system.jobpost_service.repository.JobPostRepository;
 import com.recruitment_system.jobpost_service.repository.SkillRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
-
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -57,14 +58,12 @@ public class JobPostService {
                 .map(this::mapToResponseDto)
                 .collect(Collectors.toList());
     }
-
     public List<JobPostResponseDto> getByOrganization(Long orgId) {
         return jobPostRepository.findByOrgId(orgId)
                 .stream()
                 .map(this::mapToResponseDto)
                 .collect(Collectors.toList());
     }
-
 
     public JobPostResponseDto deletePostById(Long id) {
         JobPost post = jobPostRepository.findById(id)
@@ -74,7 +73,6 @@ public class JobPostService {
             jobPostRepository.delete(post);
             return dto;
     }
-
 
     @Transactional
     public List<JobPostResponseDto> deletePostByOrgId(Long orgId) {
@@ -130,5 +128,55 @@ public class JobPostService {
                 .postId(post.getId())
                 .isActive(post.getIsActive())
                 .build();
+    }
+
+    public List<JobPostResponseDto> filterJobPosts(String jobTitle,
+                                                   String location,
+                                                   String experienceLevel,
+                                                   String workType,
+                                                   String orderBy,
+                                                   String datePosted,
+                                                   Pageable pageable) {
+        Specification<JobPost> spec = (root, query, cb) -> cb.conjunction();
+
+        if (jobTitle != null && !jobTitle.isEmpty()) {
+            spec = spec.and((root, query, cb) ->
+                    cb.like(cb.lower(root.get("title")), "%" + jobTitle.toLowerCase() + "%"));
+        }
+
+        if (location != null && !location.isEmpty()) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(cb.lower(root.get("location")), location.toLowerCase()));
+        }
+        if (experienceLevel != null && !experienceLevel.isEmpty()) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("experienceLevel"), experienceLevel));
+        }
+
+        if (workType != null && !workType.isEmpty()) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("workType"), workType));
+        }
+        if (datePosted != null && !datePosted.equalsIgnoreCase("Anytime")) {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime threshold = switch (datePosted.toLowerCase()) {
+                case "past 24 hours" -> now.minusHours(24);
+                case "past 3 days"   -> now.minusDays(3);
+                case "past week"     -> now.minusWeeks(1);
+                case "past month"    -> now.minusMonths(1);
+                default -> null;
+            };
+            if (threshold != null) {
+                spec = spec.and((root, query, cb) ->
+                        cb.greaterThanOrEqualTo(root.get("createdAt"), threshold));
+            }
+        }
+
+        List<JobPost> filteredJobPosts = jobPostRepository.findAll(spec, pageable).getContent();
+
+        return filteredJobPosts.stream()
+                .map(this::mapToResponseDto)
+                .collect(Collectors.toList());
+
     }
 }
