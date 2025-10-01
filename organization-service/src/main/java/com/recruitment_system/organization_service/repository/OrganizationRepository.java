@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface OrganizationRepository extends JpaRepository<Organization,Long> {
     Optional<Organization> findOrganizationByCompanyEmail(String companyEmail);
-    Optional<List<Organization>> findOrganizationByEmail(String email);
+    Optional<List<Organization>> findOrganizationByUserEmail(String userEmail);
 
 }

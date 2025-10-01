@@ -25,10 +25,10 @@ public class ScreeningController {
 //        return ResponseEntity.ok().build();
 //    }
 
-    @GetMapping("/job-post/{jobPostId}")
-    public List<CandidateResult> getRankedList(@PathVariable Long jobPostId) {
-        return screeningService.getRankedResults(jobPostId);
-    }
+//    @GetMapping("/job-post/{jobPostId}")
+//    public List<CandidateResult> getRankedList(@PathVariable Long jobPostId) {
+//        return screeningService.getRankedResults(jobPostId);
+//    }
 
     @PostMapping("/run/{postId}")
     public ResponseEntity<ApiResponse<List<CandidateResultDto>>> runScreeningManually(@PathVariable Long postId) {

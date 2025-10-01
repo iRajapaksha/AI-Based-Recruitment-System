@@ -6,6 +6,7 @@ import com.recruitment_system.organization_service.dto.OrganizationDto;
 import com.recruitment_system.organization_service.dto.OrganizationResponseDto;
 import com.recruitment_system.organization_service.feign.JobPostInterface;
 import com.recruitment_system.organization_service.service.OrganizationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -43,7 +44,7 @@ public class OrganizationController {
 
     @PostMapping("/me")
     public ResponseEntity<ApiResponse<OrganizationResponseDto>> createOrg(Authentication auth,
-                                                                  @RequestBody OrganizationDto req){
+                                                                  @Valid @RequestBody OrganizationDto req){
         String email = auth.getName();
         return  ResponseEntity.ok(
                 new ApiResponse<>(true,"Organization created successfully."

@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CandidateResultRepository extends JpaRepository<CandidateResult,Long> {
-    List<CandidateResult> findByJobPostIdOrderByRankAsc(Long jobPostId);
+//    List<CandidateResult> findByJobPostIdOrderByRankAsc(Long jobPostId);
 
 }

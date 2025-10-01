@@ -1,11 +1,11 @@
-package com.recruitment_system.jobpost_service.dto;
+package com.recruitment_system.dto;
 
-
-import com.recruitment_system.jobpost_service.model.Skill;
+import com.recruitment_system.model.Skill;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class JobPostResponseDto {

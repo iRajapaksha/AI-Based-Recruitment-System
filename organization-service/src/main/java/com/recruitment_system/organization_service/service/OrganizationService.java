@@ -64,7 +64,7 @@ public class OrganizationService {
     }
 
     public List<OrganizationResponseDto> getMyOrgs(String email){
-        List<Organization> orgs = organizationRepository.findOrganizationByEmail(email)
+        List<Organization> orgs = organizationRepository.findOrganizationByUserEmail(email)
                         .orElseThrow(()->new RuntimeException("No organizations found"));
         List<OrganizationResponseDto> listOrgs = new ArrayList<>();
         orgs.forEach((org)->{

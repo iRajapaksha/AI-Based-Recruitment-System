@@ -27,7 +27,7 @@ public class NotificationService {
         String email = event.getEmail();
         String token = event.getToken();
         System.out.println("notfication service triggered: " +email);
-        String link = "http://localhost:8080/api/auth/verify?token=" + token;
+        String link = String.format("http://31.97.191.209:9090/auth/verify/%s", token);
         SimpleMailMessage message = new SimpleMailMessage();
         //  message.setFrom("senderemil");
         message.setTo(email);

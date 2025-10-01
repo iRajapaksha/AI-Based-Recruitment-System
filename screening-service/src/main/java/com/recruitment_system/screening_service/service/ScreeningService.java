@@ -43,11 +43,13 @@ public class ScreeningService {
                         .jobPostId(jobPostId)
                         .match_analysis(aiResult.getMatch_analysis())
                         .build();
+                System.out.println("Screened result: " + result);
                 resultRepository.save(result);
             }
 
         }catch (Exception ex){
-            System.out.println("Error processing screening for job post ID " + event.getJobPostId() + ": " + ex.getMessage());
+            System.out.println("Error processing screening for job post ID " +
+                    event.getJobPostId() + ": " + ex.getMessage());
 
         }
 
@@ -77,12 +79,10 @@ public class ScreeningService {
 
   }
 
-
-
     }
-
-    public List<CandidateResult> getRankedResults(Long jobPostId) {
-        return resultRepository.findByJobPostIdOrderByRankAsc(jobPostId);
-    }
+//
+//    public List<CandidateResult> getRankedResults(Long jobPostId) {
+//        return resultRepository.findByJobPostIdOrderByRankAsc(jobPostId);
+//    }
 }
 

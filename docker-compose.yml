@@ -1,5 +1,21 @@
 version: "3"
 services:
+  #Mysql database service
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: recruitmentsystem
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  #Kafka and Zookeeper services
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     ports:
@@ -20,7 +36,7 @@ services:
     depends_on:
       - zookeeper
 
-## Prometheus Configuration
+  # Prometheus Configuration
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -31,13 +47,14 @@ services:
         - ./prometheus.yml:/etc/prometheus/prometheus.yml
     depends_on:
       - api-gateway
-      - user-service
+      - service-discovery
+#      - user-service
       - auth-service
-      - jobpost-service
-      - notification-service
-      - organization-service
-      - screening-service
-      - resume-service
+#      - jobpost-service
+#      - notification-service
+#      - organization-service
+#      - screening-service
+#      - resume-service
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
@@ -53,3 +70,28 @@ services:
           GF_SECURITY_ADMIN_PASSWORD: admin
     depends_on:
         - prometheus
+
+  #Microservices
+  service-discovery:
+    image: recruitment-system/service-discovery:latest
+    container_name: service-discovery
+    restart: unless-stopped
+    ports:
+      - "8761:8761"
+    depends_on:
+      - mysql-db
+
+  auth-service:
+    image: recruitment-system/auth-service:latest
+    container_name: auth-service
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mysql-db
+      - service-discovery
+      - kafka
+
+volumes:
+  grafana-storage:
+
