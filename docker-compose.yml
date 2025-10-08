@@ -1,23 +1,24 @@
 version: "3"
 services:
   #Mysql database service
-  mysql-db:
-    image: mysql:8.0
-    container_name: mysql-db
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: recruitmentsystem
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql-data:/var/lib/mysql
+#  mysql-db:
+#    image: mysql:8.0
+#    container_name: mysql-db
+#    restart: always
+#    environment:
+#      MYSQL_ROOT_PASSWORD: root
+#      MYSQL_DATABASE: recruitmentsystem
+#      MYSQL_USER: root
+#      MYSQL_PASSWORD: root
+#    ports:
+#      - "3306:3306"
+#    volumes:
+#      - mysql-data:/var/lib/mysql
 
   #Kafka and Zookeeper services
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
     ports:
       - "2181:2181"
     environment:
@@ -25,6 +26,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
   kafka:
     image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
     ports:
       - "9092:9092"
     environment:
@@ -33,6 +35,8 @@ services:
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
     depends_on:
       - zookeeper
 
@@ -45,11 +49,11 @@ services:
         - "9090:9090"
     volumes:
         - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    depends_on:
-      - api-gateway
-      - service-discovery
+#    depends_on:
+#      - api-gateway
+#      - service-discovery
 #      - user-service
-      - auth-service
+#      - auth-service
 #      - jobpost-service
 #      - notification-service
 #      - organization-service
@@ -72,25 +76,25 @@ services:
         - prometheus
 
   #Microservices
-  service-discovery:
-    image: recruitment-system/service-discovery:latest
-    container_name: service-discovery
-    restart: unless-stopped
-    ports:
-      - "8761:8761"
-    depends_on:
-      - mysql-db
-
-  auth-service:
-    image: recruitment-system/auth-service:latest
-    container_name: auth-service
-    restart: unless-stopped
-    ports:
-      - "8081:8081"
-    depends_on:
-      - mysql-db
-      - service-discovery
-      - kafka
+#  service-discovery:
+#    image: recruitment-system/service-discovery:latest
+#    container_name: service-discovery
+#    restart: unless-stopped
+#    ports:
+#      - "8761:8761"
+#    depends_on:
+#      - mysql-db
+#
+#  auth-service:
+#    image: recruitment-system/auth-service:latest
+#    container_name: auth-service
+#    restart: unless-stopped
+#    ports:
+#      - "8081:8081"
+#    depends_on:
+#      - mysql-db
+#      - service-discovery
+#      - kafka
 
 volumes:
   grafana-storage:

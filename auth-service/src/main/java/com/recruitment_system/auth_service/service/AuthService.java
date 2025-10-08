@@ -38,7 +38,8 @@ public class AuthService {
 
         public RegisterResponseDto register(RegisterRequestDto request) {
                 if(userRepository.findByEmail(request.getEmail()).isPresent()){
-                        throw new RuntimeException("User already exists with this email.Please verify your email. Check inbox.");
+                        throw new RuntimeException("User already exists with this email." +
+                                "Please verify your email. Check inbox.");
                 }
                 String token = UUID.randomUUID().toString(); // or use JWT
 
@@ -102,9 +103,9 @@ public class AuthService {
                         throw new RuntimeException("Invalid credentials");
                 }
                 // Use when deployed to a server. put password check inside verification
-                if (!user.isVerified()) {
-                        throw new RuntimeException("Please verify your email before log in.");
-                }
+//                if (!user.isVerified()) {
+//                        throw new RuntimeException("Please verify your email before log in.");
+//                }
 
 
                 UsernamePasswordAuthenticationToken auth =

@@ -15,7 +15,7 @@ public class JwtUtil {
     private final String SECRET_KEY = "sectretkey123werthyjh24356ujhgfewqrgthgnbvdewrgthnwergthyjnbsehrtytsgratthrjyndgbfrathydgfbvd";
     SecretKey key = new SecretKeySpec(SECRET_KEY.getBytes(), SignatureAlgorithm.HS512.getJcaName());
 
-    private final long EXPIRATION = 1000*60*60;
+    private final long EXPIRATION = 1000*60*60*24;
     public String extractEmail(String token) {
         return getClaims(token).getSubject();
     }
