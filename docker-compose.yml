@@ -1,21 +1,26 @@
 version: "3"
 services:
-  #Mysql database service
-#  mysql-db:
-#    image: mysql:8.0
-#    container_name: mysql-db
-#    restart: always
-#    environment:
-#      MYSQL_ROOT_PASSWORD: root
-#      MYSQL_DATABASE: recruitmentsystem
-#      MYSQL_USER: root
-#      MYSQL_PASSWORD: root
-#    ports:
-#      - "3306:3306"
-#    volumes:
-#      - mysql-data:/var/lib/mysql
 
-  #Kafka and Zookeeper services
+  # Mysql database service
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: recruitmentsystem
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 5s
+      retries: 5
+
+  # Kafka and Zookeeper services
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     container_name: zookeeper
@@ -24,6 +29,8 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+        - backend
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: kafka
@@ -31,16 +38,18 @@ services:
       - "9092:9092"
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
     depends_on:
       - zookeeper
+    networks:
+      - backend
 
-  # Prometheus Configuration
+ # Prometheus Configuration
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -49,16 +58,18 @@ services:
         - "9090:9090"
     volumes:
         - ./prometheus.yml:/etc/prometheus/prometheus.yml
-#    depends_on:
-#      - api-gateway
-#      - service-discovery
-#      - user-service
-#      - auth-service
-#      - jobpost-service
-#      - notification-service
-#      - organization-service
-#      - screening-service
-#      - resume-service
+    networks:
+      - backend
+    depends_on:
+      - api-gateway
+      - service-registry
+      - user-service
+      - auth-service
+      - jobpost-service
+      - notification-service
+      - organization-service
+      - screening-service
+      - resume-service
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
@@ -74,28 +85,178 @@ services:
           GF_SECURITY_ADMIN_PASSWORD: admin
     depends_on:
         - prometheus
+    networks:
+      - backend
 
-  #Microservices
-#  service-discovery:
-#    image: recruitment-system/service-discovery:latest
-#    container_name: service-discovery
-#    restart: unless-stopped
-#    ports:
-#      - "8761:8761"
-#    depends_on:
-#      - mysql-db
-#
-#  auth-service:
-#    image: recruitment-system/auth-service:latest
-#    container_name: auth-service
-#    restart: unless-stopped
-#    ports:
-#      - "8081:8081"
-#    depends_on:
-#      - mysql-db
-#      - service-discovery
+  # Microservices
+  service-registry:
+    image: irajapaksha/service-registry:latest
+    container_name: service-registry
+    restart: unless-stopped
+    ports:
+      - "8761:8761"
+    environment:
+      - EUREKA_INSTANCE_HOSTNAME=service-registry
+    networks:
+      - backend
+
+  auth-service:
+    image: irajapaksha/auth-service:v1
+    container_name: auth-service
+    restart: unless-stopped
+    ports:
+      - "9095:9095"
+    depends_on:
+      - mysql-db
+      - service-registry
+      - kafka
+    environment:
+        - SPRING_PROFILES_ACTIVE=docker
+        - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/recruitmentsystem
+        - SPRING_DATASOURCE_USERNAME=root
+        - SPRING_DATASOURCE_PASSWORD=root
+        - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+        - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+        - backend
+
+  user-service:
+    image: irajapaksha/user-service:v1
+    container_name: user-service
+    restart: unless-stopped
+    ports:
+      - "8085:8085"
+    depends_on:
+      - mysql-db
+      - service-registry
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/recruitmentsystem
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+    networks:
+        - backend
+
+  notification-service:
+    image: irajapaksha/notification-service:v1
+    container_name: notification-service
+    restart: unless-stopped
+    ports:
+      - "8105:8105"
+    depends_on:
+      - service-registry
+      - kafka
+    environment:
+        - SPRING_PROFILES_ACTIVE=docker
+        - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+        - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+        - backend
+
+  organization-service:
+    image: irajapaksha/organization-service:v1
+    container_name: organization-service
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    depends_on:
+      - mysql-db
+      - service-registry
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/recruitmentsystem
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+    networks:
+        - backend
+
+  jobpost-service:
+    image: irajapaksha/jobpost-service:v1
+    container_name: jobpost-service
+    restart: unless-stopped
+    ports:
+      - "8095:8095"
+    depends_on:
+      - mysql-db
+      - service-registry
 #      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/recruitmentsystem
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+        - backend
 
+  screening-service:
+    image: irajapaksha/screening-service:v1
+    container_name: screening-service
+    restart: unless-stopped
+    ports:
+      - "8102:8102"
+    depends_on:
+      - mysql-db
+      - service-registry
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/recruitmentsystem
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+        - backend
+
+  resume-service:
+    image: irajapaksha/resume-service:v1
+    container_name: resume-service
+    restart: unless-stopped
+    ports:
+      - "8100:8100"
+    depends_on:
+      - mysql-db
+      - service-registry
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/recruitmentsystem
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+        - backend
+
+  api-gateway:
+    image: irajapaksha/api-gateway:latest
+    container_name: api-gateway
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    depends_on:
+      - service-registry
+      - auth-service
+      - user-service
+      - jobpost-service
+      - organization-service
+      - screening-service
+      - resume-service
+      - notification-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+    networks:
+        - backend
 volumes:
   grafana-storage:
+  mysql-data:
+
+networks:
+  backend:
+    driver: bridge
 

@@ -16,7 +16,14 @@
       <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/security/OAuth2LoginSuccessHandler.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/service/CustomOAuth2UserService.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/service/CustomOauthUser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application-docker.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/resources/application-docker.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/organization-service/src/main/resources/application-docker.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resume-service/src/main/resources/application-docker.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/screening-service/src/main/resources/application-docker.properties" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/service-registry/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user-service/src/main/resources/application-docker.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/auth-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/AuthServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/AuthServiceApplication.java" afterDir="false" />
@@ -32,9 +39,20 @@
       <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/service/AuthService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/organization-service/src/main/java/com/recruitment_system/organization_service/security/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/organization-service/src/main/java/com/recruitment_system/organization_service/security/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobpost-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/jobpost-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobpost-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/jobpost-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/organization-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/organization-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/organization-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/organization-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/resume-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/resume-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screening-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/screening-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screening-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/screening-service/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service-registry/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service-registry/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service-registry/src/main/java/com/recruitment_system/service_registry/ServiceRegistryApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/service-registry/src/main/java/com/recruitment_system/service_registry/ServiceRegistryApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +92,7 @@
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;jdk.selected.JAVA_MODULE&quot;: &quot;21&quot;,
     &quot;last_directory_selection&quot;: &quot;D:/Projects/recruitment-system/common-security/src/main/java&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/nayan/OneDrive/Desktop/SeatBooking&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Projects/recruitment-system/organization-service&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
