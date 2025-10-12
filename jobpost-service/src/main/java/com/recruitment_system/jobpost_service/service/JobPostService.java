@@ -1,5 +1,6 @@
 package com.recruitment_system.jobpost_service.service;
 
+import com.recruitment_system.jobpost_service.dto.JobPostDraftDto;
 import com.recruitment_system.jobpost_service.dto.JobPostDto;
 import com.recruitment_system.jobpost_service.dto.JobPostResponseDto;
 import com.recruitment_system.jobpost_service.model.JobPost;
@@ -8,12 +9,14 @@ import com.recruitment_system.jobpost_service.repository.JobPostRepository;
 import com.recruitment_system.jobpost_service.repository.SkillRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,8 +26,6 @@ import java.util.stream.Collectors;
 public class JobPostService {
     private final JobPostRepository jobPostRepository;
     private final SkillRepository skillRepository;
-
-
     public JobPostResponseDto createJobPost(JobPostDto post) {
         List<Skill> skillEntities = post.getSkills().stream()
                 .map(skill -> skillRepository.findByName(skill.getName())
@@ -46,11 +47,68 @@ public class JobPostService {
                 .workType(post.getWorkType())
                 .location(post.getLocation())
                 .isActive(true)
+                .isDraft(false)
                 .build();
         JobPost saved = jobPostRepository.save(jobPost);
 
         return mapToResponseDto(saved);
     }
+
+    public JobPostResponseDto saveDraft(JobPostDraftDto draft) {
+        JobPost jobPost = JobPost.builder()
+                .companyName(draft.getCompanyName())
+                .location(draft.getLocation())
+                .workType(draft.getWorkType())
+                .experienceLevel(draft.getExperienceLevel())
+                .employmentType(draft.getEmploymentType())
+                .minSalary(draft.getMinSalary() != null ? draft.getMinSalary() : 0)
+                .maxSalary(draft.getMaxSalary() != null ? draft.getMaxSalary() : 0)
+                .title(draft.getTitle())
+                .description(draft.getDescription())
+                .requirements(draft.getRequirements())
+                .deadline(draft.getDeadline())
+                .orgId(draft.getOrgId())
+                .createdAt(LocalDateTime.now())
+                .isActive(false)
+                .isDraft(true)
+                .skills(draft.getSkills() != null ? draft.getSkills() : new ArrayList<Skill>())
+                .build();
+
+        JobPost saved = jobPostRepository.save(jobPost);
+        return mapToResponseDto(saved);
+    }
+
+    public JobPostResponseDto publishDraft(Long draftId, JobPostDto completePost) {
+        JobPost existing = jobPostRepository.findById(draftId)
+                .orElseThrow(() -> new ResourceNotFoundException("Draft not found"));
+
+        existing.setCompanyName(completePost.getCompanyName());
+        existing.setLocation(completePost.getLocation());
+        existing.setWorkType(completePost.getWorkType());
+        existing.setExperienceLevel(completePost.getExperienceLevel());
+        existing.setEmploymentType(completePost.getEmploymentType());
+        existing.setMinSalary(completePost.getMinSalary());
+        existing.setMaxSalary(completePost.getMaxSalary());
+        existing.setTitle(completePost.getTitle());
+        existing.setDescription(completePost.getDescription());
+        existing.setRequirements(completePost.getRequirements());
+        existing.setDeadline(completePost.getDeadline());
+        existing.setOrgId(completePost.getOrgId());
+        existing.setIsActive(true);
+        existing.setIsDraft(false);
+        existing.setCreatedAt(LocalDateTime.now());
+
+        List<Skill> skillEntities = completePost.getSkills().stream()
+                .map(skill -> skillRepository.findByName(skill.getName())
+                        .orElseGet(() -> new Skill(skill.getName())))
+                .collect(Collectors.toList());
+
+        existing.setSkills(skillEntities);
+
+        JobPost saved = jobPostRepository.save(existing);
+        return mapToResponseDto(saved);
+    }
+
 
     public List<JobPostResponseDto> getAll() {
         return jobPostRepository.findAll()
@@ -127,6 +185,7 @@ public class JobPostService {
                 .location(post.getLocation())
                 .postId(post.getId())
                 .isActive(post.getIsActive())
+                .isDraft(post.getIsDraft())
                 .build();
     }
 

@@ -19,8 +19,13 @@ public class JobPost {
     private double minSalary;
     private double maxSalary;
     private Boolean isActive;
+    private Boolean isDraft;
     private String title;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String requirements;
     private LocalDateTime createdAt;
     private LocalDateTime deadline;

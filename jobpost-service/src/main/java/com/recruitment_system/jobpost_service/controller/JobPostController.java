@@ -1,6 +1,7 @@
 package com.recruitment_system.jobpost_service.controller;
 
 import com.recruitment_system.jobpost_service.dto.ApiResponse;
+import com.recruitment_system.jobpost_service.dto.JobPostDraftDto;
 import com.recruitment_system.jobpost_service.model.JobPost;
 import com.recruitment_system.jobpost_service.dto.JobPostDto;
 import com.recruitment_system.jobpost_service.dto.JobPostResponseDto;
@@ -30,6 +31,24 @@ public class JobPostController {
         return ResponseEntity.ok(
                 new ApiResponse<>(true,"Job post created",
                         jobPostService.createJobPost(request))
+        );
+    }
+
+    @PostMapping("/draft")
+    public ResponseEntity<ApiResponse<JobPostResponseDto>> saveDraft(@RequestBody JobPostDraftDto draft) {
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Job post draft saved",
+                        jobPostService.saveDraft(draft))
+        );
+    }
+
+    @PutMapping("/publish/{id}")
+    public ResponseEntity<ApiResponse<JobPostResponseDto>> publishDraft(
+            @PathVariable Long id,
+            @Valid @RequestBody JobPostDto request) {
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Job post published",
+                        jobPostService.publishDraft(id, request))
         );
     }
 
