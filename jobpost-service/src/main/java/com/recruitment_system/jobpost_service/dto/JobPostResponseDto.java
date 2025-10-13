@@ -11,6 +11,7 @@ import java.util.List;
 public class JobPostResponseDto {
     private Long postId;
     private String companyName;
+    private String companyLogo;
     private String location;
     private String workType;
     private String experienceLevel;
@@ -20,12 +21,15 @@ public class JobPostResponseDto {
     private String title;
     private String description;
     private String requirements;
+    private String benefits;
     private boolean isActive;
     private boolean isDraft;
     private LocalDateTime createdAt;
     private LocalDateTime deadline;
     private List<Skill> skills;
     private Long orgId;
+    private String createdBy;
+    private String currency;
 
 
 }

@@ -12,6 +12,7 @@ public class JobPost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String companyName;
+    private String companyLogo;
     private String location;
     private String workType;
     private String experienceLevel;
@@ -27,9 +28,14 @@ public class JobPost {
     @Lob
     @Column(columnDefinition = "TEXT")
     private String requirements;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String benefits;
     private LocalDateTime createdAt;
     private LocalDateTime deadline;
     private Long orgId;
+    private String createdBy;
+    private String currency;
 
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(

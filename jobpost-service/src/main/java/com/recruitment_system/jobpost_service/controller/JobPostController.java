@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,21 +25,55 @@ import java.util.Map;
 public class JobPostController {
 
     private final JobPostService jobPostService;
-
-
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<JobPostResponseDto>> create(@Valid @RequestBody JobPostDto request) {
+    public ResponseEntity<ApiResponse<JobPostResponseDto>> create(
+            @Valid @RequestBody JobPostDto request,
+            Authentication auth) {
+        String email = auth.getName();
         return ResponseEntity.ok(
                 new ApiResponse<>(true,"Job post created",
-                        jobPostService.createJobPost(request))
+                        jobPostService.createJobPost(request,email))
         );
     }
 
-    @PostMapping("/draft")
-    public ResponseEntity<ApiResponse<JobPostResponseDto>> saveDraft(@RequestBody JobPostDraftDto draft) {
+    @PostMapping("/drafts")
+    public ResponseEntity<ApiResponse<JobPostResponseDto>> saveDraft(
+            @RequestBody JobPostDraftDto draft,
+            Authentication auth) {
+        String email = auth.getName();
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Job post draft saved",
-                        jobPostService.saveDraft(draft))
+                        jobPostService.saveDraft(draft,email))
+        );
+    }
+
+    @GetMapping("/drafts")
+    public ResponseEntity<ApiResponse<JobPostResponseDto>> getDraft(
+            Authentication auth) {
+        String email = auth.getName();
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Job post draft retrieved",
+                        jobPostService.getDraft(email))
+        );
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<List<JobPostResponseDto>>> getMyJobPosts(
+            Authentication auth) {
+        String email = auth.getName();
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "List of my job posts",
+                        jobPostService.getMyJobPosts(email))
+        );
+    }
+
+    @PatchMapping("/drafts/{id}")
+    public ResponseEntity<ApiResponse<JobPostResponseDto>> updateDraft(
+            @PathVariable Long id,
+            @RequestBody Map<String,Object> updates) {
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Job post draft updated",
+                        jobPostService.updateDraft(id, updates))
         );
     }
 

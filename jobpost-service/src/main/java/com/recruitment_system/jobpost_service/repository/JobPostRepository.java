@@ -13,12 +13,14 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface JobPostRepository extends JpaRepository<JobPost,Long>, JpaSpecificationExecutor<JobPost> {
 
     Page<JobPost> findAll(Specification<JobPost> spec, Pageable pageable);
 
     List<JobPost> findByOrgId(Long orgId);
+    List<JobPost> findByIsActiveTrue();
     @Modifying
     @Transactional
     @Query("DELETE FROM JobPost jp WHERE jp.orgId = :orgId")
@@ -27,4 +29,7 @@ public interface JobPostRepository extends JpaRepository<JobPost,Long>, JpaSpeci
     List<JobPost> findByDeadlineBeforeAndIsActive(LocalDateTime now, Boolean isActive);
 
 
+    Optional<JobPost> findByCreatedByAndIsDraftTrue(String email);
+
+    Optional<List<JobPost>> findByCreatedByAndIsActiveTrue(String email);
 }

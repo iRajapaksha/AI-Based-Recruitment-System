@@ -3,6 +3,7 @@ package com.recruitment_system.jobpost_service.service;
 import com.recruitment_system.jobpost_service.dto.JobPostDraftDto;
 import com.recruitment_system.jobpost_service.dto.JobPostDto;
 import com.recruitment_system.jobpost_service.dto.JobPostResponseDto;
+import com.recruitment_system.jobpost_service.feign.OrganizationInterface;
 import com.recruitment_system.jobpost_service.model.JobPost;
 import com.recruitment_system.jobpost_service.model.Skill;
 import com.recruitment_system.jobpost_service.repository.JobPostRepository;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Field;
@@ -26,21 +28,36 @@ import java.util.stream.Collectors;
 public class JobPostService {
     private final JobPostRepository jobPostRepository;
     private final SkillRepository skillRepository;
-    public JobPostResponseDto createJobPost(JobPostDto post) {
+    private final OrganizationInterface organizationInterface;
+    public JobPostResponseDto createJobPost(JobPostDto post,String email) {
         List<Skill> skillEntities = post.getSkills().stream()
                 .map(skill -> skillRepository.findByName(skill.getName())
                         .orElseGet(() -> new Skill(skill.getName())))
                 .collect(Collectors.toList());
+
+        ResponseEntity<String> response = organizationInterface.getLogo(post.getOrgId());
+
+        if (response.getBody() == null) {
+            throw new RuntimeException("Organization not found with ID: " + post.getOrgId());
+        }
+
+        String logo = response.getBody();
+
+
         JobPost jobPost = JobPost.builder()
                 .companyName(post.getCompanyName())
+                .companyLogo(logo)
                 .deadline(post.getDeadline())
                 .title(post.getTitle())
                 .requirements(post.getRequirements())
+                .benefits(post.getBenefits())
                 .employmentType(post.getEmploymentType())
                 .experienceLevel(post.getExperienceLevel())
                 .minSalary(post.getMinSalary())
                 .maxSalary(post.getMaxSalary())
+                .currency(post.getCurrency())
                 .createdAt(LocalDateTime.now())
+                .createdBy(email)
                 .skills(skillEntities)
                 .description(post.getDescription())
                 .orgId(post.getOrgId())
@@ -54,7 +71,7 @@ public class JobPostService {
         return mapToResponseDto(saved);
     }
 
-    public JobPostResponseDto saveDraft(JobPostDraftDto draft) {
+    public JobPostResponseDto saveDraft(JobPostDraftDto draft,String email) {
         JobPost jobPost = JobPost.builder()
                 .companyName(draft.getCompanyName())
                 .location(draft.getLocation())
@@ -66,9 +83,12 @@ public class JobPostService {
                 .title(draft.getTitle())
                 .description(draft.getDescription())
                 .requirements(draft.getRequirements())
+                .benefits(draft.getBenefits())
+                .currency(draft.getCurrency())
                 .deadline(draft.getDeadline())
                 .orgId(draft.getOrgId())
                 .createdAt(LocalDateTime.now())
+                .createdBy(email)
                 .isActive(false)
                 .isDraft(true)
                 .skills(draft.getSkills() != null ? draft.getSkills() : new ArrayList<Skill>())
@@ -81,8 +101,16 @@ public class JobPostService {
     public JobPostResponseDto publishDraft(Long draftId, JobPostDto completePost) {
         JobPost existing = jobPostRepository.findById(draftId)
                 .orElseThrow(() -> new ResourceNotFoundException("Draft not found"));
+        ResponseEntity<String> response = organizationInterface.getLogo(completePost.getOrgId());
+
+        if (response.getBody() == null) {
+            throw new RuntimeException("Organization not found with ID: " + completePost.getOrgId());
+        }
+
+        String logo = response.getBody();
 
         existing.setCompanyName(completePost.getCompanyName());
+        existing.setCompanyLogo(logo);
         existing.setLocation(completePost.getLocation());
         existing.setWorkType(completePost.getWorkType());
         existing.setExperienceLevel(completePost.getExperienceLevel());
@@ -92,6 +120,7 @@ public class JobPostService {
         existing.setTitle(completePost.getTitle());
         existing.setDescription(completePost.getDescription());
         existing.setRequirements(completePost.getRequirements());
+        existing.setBenefits(completePost.getBenefits());
         existing.setDeadline(completePost.getDeadline());
         existing.setOrgId(completePost.getOrgId());
         existing.setIsActive(true);
@@ -109,9 +138,14 @@ public class JobPostService {
         return mapToResponseDto(saved);
     }
 
+    public JobPostResponseDto getDraft(String email){
+        JobPost draft = jobPostRepository.findByCreatedByAndIsDraftTrue(email)
+                .orElseThrow(()->new RuntimeException("No draft found for user: " + email));
+        return mapToResponseDto(draft);
+    }
 
     public List<JobPostResponseDto> getAll() {
-        return jobPostRepository.findAll()
+        return jobPostRepository.findByIsActiveTrue()
                 .stream()
                 .map(this::mapToResponseDto)
                 .collect(Collectors.toList());
@@ -170,14 +204,18 @@ public class JobPostService {
 
         return JobPostResponseDto.builder()
                 .companyName(post.getCompanyName())
+                .companyLogo(post.getCompanyLogo())
                 .deadline(post.getDeadline())
                 .title(post.getTitle())
                 .requirements(post.getRequirements())
+                .benefits(post.getBenefits())
                 .employmentType(post.getEmploymentType())
                 .experienceLevel(post.getExperienceLevel())
                 .minSalary(post.getMinSalary())
                 .maxSalary(post.getMaxSalary())
+                .currency(post.getCurrency())
                 .createdAt(post.getCreatedAt())
+                .createdBy(post.getCreatedBy())
                 .skills(skillEntities)
                 .description(post.getDescription())
                 .orgId(post.getOrgId())
@@ -237,5 +275,37 @@ public class JobPostService {
                 .map(this::mapToResponseDto)
                 .collect(Collectors.toList());
 
+    }
+
+    public JobPostResponseDto getDraftByPostId(Long id) {
+        JobPost post = jobPostRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Job post not found with ID: " + id));
+        if(!post.getIsDraft()){
+            throw new RuntimeException("Job post with ID: " + id + " is not a draft");
+        }
+        return mapToResponseDto(post);
+    }
+
+    public JobPostResponseDto updateDraft(Long draftId, Map<String,Object> updates) {
+        JobPost draft = jobPostRepository.findById(draftId)
+                .orElseThrow(()-> new RuntimeException("Draft not found"));
+        if(!draft.getIsDraft()){
+            throw new RuntimeException("Job post with ID: " + draftId + " is not a draft");
+        }
+        updates.forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(JobPost.class, key);
+            if (field != null) {
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, draft, value);
+            }
+        });
+        jobPostRepository.save(draft);
+        return mapToResponseDto(draft);
+    }
+
+    public List<JobPostResponseDto> getMyJobPosts(String email) {
+        List<JobPost> posts = jobPostRepository.findByCreatedByAndIsActiveTrue(email)
+                .orElseThrow(()->new RuntimeException("No active job posts found for user: " + email));
+        return posts.stream().map(this::mapToResponseDto).collect(Collectors.toList());
     }
 }

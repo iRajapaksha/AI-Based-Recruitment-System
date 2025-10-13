@@ -61,4 +61,10 @@ public class JobPostDto {
 
     @NotNull(message = "Organization ID is required")
     private Long orgId;
+
+    @NotBlank(message = "Currency is required")
+    private String currency;
+
+    @NotBlank(message = "Benefits are required")
+    private String benefits;
 }
