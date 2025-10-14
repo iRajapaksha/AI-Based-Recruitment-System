@@ -96,4 +96,10 @@ public class OrganizationService {
                 .organizationName(req.getOrganizationName())
                 .build();
     }
+
+    public String getLogoUrl(Long orgId) {
+        Organization org = organizationRepository.findById(orgId)
+                .orElseThrow(()->new RuntimeException("Organization not found"));
+        return org.getOrganizationLogo();
+    }
 }

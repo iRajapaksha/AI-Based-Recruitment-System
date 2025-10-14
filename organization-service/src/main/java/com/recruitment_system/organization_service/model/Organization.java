@@ -1,9 +1,6 @@
 package com.recruitment_system.organization_service.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -17,6 +14,8 @@ public class Organization {
     private String organizationName;
     private String organizationLogo;
     private String industry;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
     private String companySize;
     private String foundedYear;

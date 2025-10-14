@@ -32,6 +32,14 @@ public class OrganizationController {
 
     }
 
+    @GetMapping("/get-logo/{orgId}")
+    public ResponseEntity<String> getLogoUrl(@PathVariable Long orgId){
+        return ResponseEntity.ok(
+                organizationService.getLogoUrl(orgId)
+        );
+
+    }
+
     @GetMapping("/my-orgs")
     public ResponseEntity<ApiResponse<List<OrganizationResponseDto>>> getMyOrgs(Authentication auth){
         String email = auth.getName();
