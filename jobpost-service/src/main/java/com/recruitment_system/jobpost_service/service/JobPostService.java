@@ -183,7 +183,24 @@ public class JobPostService {
             Field field = ReflectionUtils.findField(JobPost.class, key);
             if (field != null) {
                 field.setAccessible(true);
-                ReflectionUtils.setField(field, post, value);
+
+                // Convert LocalDateTime fields manually if value is a String
+                if (field.getType().equals(LocalDateTime.class) && value instanceof String) {
+                    try {
+                        LocalDateTime dateTime = LocalDateTime.parse((String) value);
+                        ReflectionUtils.setField(field, post, dateTime);
+                    } catch (Exception e) {
+                        // Try another format (e.g. "yyyy-MM-dd")
+                        try {
+                            LocalDateTime dateTime = LocalDateTime.parse((String) value).toLocalDate().atStartOfDay();
+                            ReflectionUtils.setField(field, post, dateTime);
+                        } catch (Exception ex) {
+                            throw new RuntimeException("Invalid date format for field: " + key);
+                        }
+                    }
+                } else {
+                    ReflectionUtils.setField(field, post, value);
+                }
             }
         });
         jobPostRepository.save(post);
@@ -286,19 +303,39 @@ public class JobPostService {
         return mapToResponseDto(post);
     }
 
-    public JobPostResponseDto updateDraft(Long draftId, Map<String,Object> updates) {
+    public JobPostResponseDto updateDraft(Long draftId, Map<String, Object> updates) {
         JobPost draft = jobPostRepository.findById(draftId)
-                .orElseThrow(()-> new RuntimeException("Draft not found"));
-        if(!draft.getIsDraft()){
+                .orElseThrow(() -> new RuntimeException("Draft not found"));
+
+        if (!draft.getIsDraft()) {
             throw new RuntimeException("Job post with ID: " + draftId + " is not a draft");
         }
+
         updates.forEach((key, value) -> {
             Field field = ReflectionUtils.findField(JobPost.class, key);
             if (field != null) {
                 field.setAccessible(true);
-                ReflectionUtils.setField(field, draft, value);
+
+                // Convert LocalDateTime fields manually if value is a String
+                if (field.getType().equals(LocalDateTime.class) && value instanceof String) {
+                    try {
+                        LocalDateTime dateTime = LocalDateTime.parse((String) value);
+                        ReflectionUtils.setField(field, draft, dateTime);
+                    } catch (Exception e) {
+                        // Try another format (e.g. "yyyy-MM-dd")
+                        try {
+                            LocalDateTime dateTime = LocalDateTime.parse((String) value).toLocalDate().atStartOfDay();
+                            ReflectionUtils.setField(field, draft, dateTime);
+                        } catch (Exception ex) {
+                            throw new RuntimeException("Invalid date format for field: " + key);
+                        }
+                    }
+                } else {
+                    ReflectionUtils.setField(field, draft, value);
+                }
             }
         });
+
         jobPostRepository.save(draft);
         return mapToResponseDto(draft);
     }

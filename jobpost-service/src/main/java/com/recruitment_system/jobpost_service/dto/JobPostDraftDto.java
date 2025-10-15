@@ -1,6 +1,7 @@
 package com.recruitment_system.jobpost_service.dto;
 
 import com.recruitment_system.jobpost_service.model.Skill;
+import jakarta.validation.constraints.Future;
 import lombok.*;
 
 import java.time.LocalDateTime;
