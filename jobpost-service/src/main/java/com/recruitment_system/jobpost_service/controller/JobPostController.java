@@ -1,9 +1,8 @@
 package com.recruitment_system.jobpost_service.controller;
 
 import com.recruitment_system.jobpost_service.dto.ApiResponse;
-import com.recruitment_system.jobpost_service.dto.JobPostDraftDto;
-import com.recruitment_system.jobpost_service.model.JobPost;
-import com.recruitment_system.jobpost_service.dto.JobPostDto;
+import com.recruitment_system.jobpost_service.dto.JobPostUpdateDto;
+import com.recruitment_system.jobpost_service.dto.JobPostCreateDto;
 import com.recruitment_system.jobpost_service.dto.JobPostResponseDto;
 import com.recruitment_system.jobpost_service.service.JobPostService;
 import jakarta.validation.Valid;
@@ -27,7 +26,7 @@ public class JobPostController {
     private final JobPostService jobPostService;
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<JobPostResponseDto>> create(
-            @Valid @RequestBody JobPostDto request,
+            @Valid @RequestBody JobPostCreateDto request,
             Authentication auth) {
         String email = auth.getName();
         return ResponseEntity.ok(
@@ -38,7 +37,7 @@ public class JobPostController {
 
     @PostMapping("/drafts")
     public ResponseEntity<ApiResponse<JobPostResponseDto>> saveDraft(
-            @RequestBody JobPostDraftDto draft,
+            @RequestBody JobPostUpdateDto draft,
             Authentication auth) {
         String email = auth.getName();
         return ResponseEntity.ok(
@@ -80,7 +79,7 @@ public class JobPostController {
     @PutMapping("/publish/{id}")
     public ResponseEntity<ApiResponse<JobPostResponseDto>> publishDraft(
             @PathVariable Long id,
-            @Valid @RequestBody JobPostDto request) {
+            @Valid @RequestBody JobPostCreateDto request) {
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Job post published",
                         jobPostService.publishDraft(id, request))
@@ -149,12 +148,12 @@ public class JobPostController {
     }
 
     @PatchMapping("/update/{postId}")
-    public ResponseEntity<ApiResponse<JobPostResponseDto>> updateJobPost(@PathVariable Integer postId,
-                                            @RequestBody Map<String,Object> updates) {
-        Long id = Long.valueOf(postId);
+    public ResponseEntity<ApiResponse<JobPostResponseDto>> updateJobPost(
+            @PathVariable Long postId,
+            @RequestBody JobPostUpdateDto updateDto) {
         return ResponseEntity.ok(
                 new ApiResponse<>(true,"Update job post.",
-                        jobPostService.updateJobPost(id, updates)
+                        jobPostService.updateJobPost(postId, updateDto)
                 ));
 
     }

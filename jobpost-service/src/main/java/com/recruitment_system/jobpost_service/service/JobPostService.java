@@ -1,7 +1,7 @@
 package com.recruitment_system.jobpost_service.service;
 
-import com.recruitment_system.jobpost_service.dto.JobPostDraftDto;
-import com.recruitment_system.jobpost_service.dto.JobPostDto;
+import com.recruitment_system.jobpost_service.dto.JobPostUpdateDto;
+import com.recruitment_system.jobpost_service.dto.JobPostCreateDto;
 import com.recruitment_system.jobpost_service.dto.JobPostResponseDto;
 import com.recruitment_system.jobpost_service.feign.OrganizationInterface;
 import com.recruitment_system.jobpost_service.model.JobPost;
@@ -29,7 +29,7 @@ public class JobPostService {
     private final JobPostRepository jobPostRepository;
     private final SkillRepository skillRepository;
     private final OrganizationInterface organizationInterface;
-    public JobPostResponseDto createJobPost(JobPostDto post,String email) {
+    public JobPostResponseDto createJobPost(JobPostCreateDto post, String email) {
         List<Skill> skillEntities = post.getSkills().stream()
                 .map(skill -> skillRepository.findByName(skill.getName())
                         .orElseGet(() -> new Skill(skill.getName())))
@@ -71,7 +71,7 @@ public class JobPostService {
         return mapToResponseDto(saved);
     }
 
-    public JobPostResponseDto saveDraft(JobPostDraftDto draft,String email) {
+    public JobPostResponseDto saveDraft(JobPostUpdateDto draft, String email) {
         JobPost jobPost = JobPost.builder()
                 .companyName(draft.getCompanyName())
                 .location(draft.getLocation())
@@ -98,7 +98,7 @@ public class JobPostService {
         return mapToResponseDto(saved);
     }
 
-    public JobPostResponseDto publishDraft(Long draftId, JobPostDto completePost) {
+    public JobPostResponseDto publishDraft(Long draftId, JobPostCreateDto completePost) {
         JobPost existing = jobPostRepository.findById(draftId)
                 .orElseThrow(() -> new ResourceNotFoundException("Draft not found"));
         ResponseEntity<String> response = organizationInterface.getLogo(completePost.getOrgId());
@@ -176,33 +176,25 @@ public class JobPostService {
         return dto;
     }
 
-    public JobPostResponseDto updateJobPost(Long postId, Map<String,Object> updates) {
+    public JobPostResponseDto updateJobPost(Long postId, JobPostUpdateDto dto) {
         JobPost post = jobPostRepository.findById(postId)
                 .orElseThrow(()-> new RuntimeException("Job post not found"));
-        updates.forEach((key, value) -> {
-            Field field = ReflectionUtils.findField(JobPost.class, key);
-            if (field != null) {
-                field.setAccessible(true);
-
-                // Convert LocalDateTime fields manually if value is a String
-                if (field.getType().equals(LocalDateTime.class) && value instanceof String) {
-                    try {
-                        LocalDateTime dateTime = LocalDateTime.parse((String) value);
-                        ReflectionUtils.setField(field, post, dateTime);
-                    } catch (Exception e) {
-                        // Try another format (e.g. "yyyy-MM-dd")
-                        try {
-                            LocalDateTime dateTime = LocalDateTime.parse((String) value).toLocalDate().atStartOfDay();
-                            ReflectionUtils.setField(field, post, dateTime);
-                        } catch (Exception ex) {
-                            throw new RuntimeException("Invalid date format for field: " + key);
-                        }
-                    }
-                } else {
-                    ReflectionUtils.setField(field, post, value);
-                }
-            }
-        });
+        if(dto.getCompanyName() != null) post.setCompanyName(dto.getCompanyName());
+        if(dto.getCompanyLogo() != null) post.setCompanyLogo(dto.getCompanyLogo());
+        if(dto.getLocation() != null) post.setLocation(dto.getLocation());
+        if(dto.getWorkType() != null) post.setWorkType(dto.getWorkType());
+        if(dto.getExperienceLevel() != null) post.setExperienceLevel(dto.getExperienceLevel());
+        if(dto.getEmploymentType() != null) post.setEmploymentType(dto.getEmploymentType());
+        if(dto.getMinSalary() != null) post.setMinSalary(dto.getMinSalary());
+        if(dto.getMaxSalary() != null) post.setMaxSalary(dto.getMaxSalary());
+        if(dto.getTitle() != null) post.setTitle(dto.getTitle());
+        if(dto.getDescription() != null) post.setDescription(dto.getDescription());
+        if(dto.getRequirements() != null) post.setRequirements(dto.getRequirements());
+        if(dto.getBenefits() != null) post.setBenefits(dto.getBenefits());
+        if(dto.getDeadline() != null) post.setDeadline(dto.getDeadline());
+        if(dto.getSkills() != null) post.setSkills(dto.getSkills());
+        if(dto.getOrgId() != null) post.setOrgId(dto.getOrgId());
+        if(dto.getCurrency() != null) post.setCurrency(dto.getCurrency());
         jobPostRepository.save(post);
         return mapToResponseDto(post);
     }

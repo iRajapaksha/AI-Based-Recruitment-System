@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor @Builder
-public class JobPostDto {
+public class JobPostCreateDto {
 
     @NotBlank(message = "Company name is required")
     @Size(max = 100, message = "Company name cannot exceed 100 characters")

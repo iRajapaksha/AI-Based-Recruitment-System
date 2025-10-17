@@ -1,7 +1,6 @@
 package com.recruitment_system.jobpost_service.dto;
 
 import com.recruitment_system.jobpost_service.model.Skill;
-import jakarta.validation.constraints.Future;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -9,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter @AllArgsConstructor @NoArgsConstructor @Builder
-public class JobPostDraftDto {
+public class JobPostUpdateDto {
     private String companyName;
     private String companyLogo;
     private String location;
