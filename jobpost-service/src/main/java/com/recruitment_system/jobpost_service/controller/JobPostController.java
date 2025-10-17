@@ -69,10 +69,10 @@ public class JobPostController {
     @PatchMapping("/drafts/{id}")
     public ResponseEntity<ApiResponse<JobPostResponseDto>> updateDraft(
             @PathVariable Long id,
-            @RequestBody Map<String,Object> updates) {
+            @RequestBody JobPostUpdateDto updateDto) {
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Job post draft updated",
-                        jobPostService.updateDraft(id, updates))
+                        jobPostService.updateDraft(id, updateDto))
         );
     }
 

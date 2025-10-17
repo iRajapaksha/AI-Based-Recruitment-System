@@ -15,12 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
-import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -295,41 +292,32 @@ public class JobPostService {
         return mapToResponseDto(post);
     }
 
-    public JobPostResponseDto updateDraft(Long draftId, Map<String, Object> updates) {
-        JobPost draft = jobPostRepository.findById(draftId)
+    public JobPostResponseDto updateDraft(Long draftId, JobPostUpdateDto dto) {
+        JobPost post = jobPostRepository.findById(draftId)
                 .orElseThrow(() -> new RuntimeException("Draft not found"));
 
-        if (!draft.getIsDraft()) {
+        if (!post.getIsDraft()) {
             throw new RuntimeException("Job post with ID: " + draftId + " is not a draft");
         }
+        if(dto.getCompanyName() != null) post.setCompanyName(dto.getCompanyName());
+        if(dto.getCompanyLogo() != null) post.setCompanyLogo(dto.getCompanyLogo());
+        if(dto.getLocation() != null) post.setLocation(dto.getLocation());
+        if(dto.getWorkType() != null) post.setWorkType(dto.getWorkType());
+        if(dto.getExperienceLevel() != null) post.setExperienceLevel(dto.getExperienceLevel());
+        if(dto.getEmploymentType() != null) post.setEmploymentType(dto.getEmploymentType());
+        if(dto.getMinSalary() != null) post.setMinSalary(dto.getMinSalary());
+        if(dto.getMaxSalary() != null) post.setMaxSalary(dto.getMaxSalary());
+        if(dto.getTitle() != null) post.setTitle(dto.getTitle());
+        if(dto.getDescription() != null) post.setDescription(dto.getDescription());
+        if(dto.getRequirements() != null) post.setRequirements(dto.getRequirements());
+        if(dto.getBenefits() != null) post.setBenefits(dto.getBenefits());
+        if(dto.getDeadline() != null) post.setDeadline(dto.getDeadline());
+        if(dto.getSkills() != null) post.setSkills(dto.getSkills());
+        if(dto.getOrgId() != null) post.setOrgId(dto.getOrgId());
+        if(dto.getCurrency() != null) post.setCurrency(dto.getCurrency());
 
-        updates.forEach((key, value) -> {
-            Field field = ReflectionUtils.findField(JobPost.class, key);
-            if (field != null) {
-                field.setAccessible(true);
-
-                // Convert LocalDateTime fields manually if value is a String
-                if (field.getType().equals(LocalDateTime.class) && value instanceof String) {
-                    try {
-                        LocalDateTime dateTime = LocalDateTime.parse((String) value);
-                        ReflectionUtils.setField(field, draft, dateTime);
-                    } catch (Exception e) {
-                        // Try another format (e.g. "yyyy-MM-dd")
-                        try {
-                            LocalDateTime dateTime = LocalDateTime.parse((String) value).toLocalDate().atStartOfDay();
-                            ReflectionUtils.setField(field, draft, dateTime);
-                        } catch (Exception ex) {
-                            throw new RuntimeException("Invalid date format for field: " + key);
-                        }
-                    }
-                } else {
-                    ReflectionUtils.setField(field, draft, value);
-                }
-            }
-        });
-
-        jobPostRepository.save(draft);
-        return mapToResponseDto(draft);
+        jobPostRepository.save(post);
+        return mapToResponseDto(post);
     }
 
     public List<JobPostResponseDto> getMyJobPosts(String email) {
