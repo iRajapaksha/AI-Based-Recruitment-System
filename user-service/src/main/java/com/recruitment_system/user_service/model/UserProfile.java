@@ -1,8 +1,11 @@
 package com.recruitment_system.user_service.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 
 @Entity
@@ -16,6 +19,8 @@ public class UserProfile {
     private String phone;
     private String profilePic;
     private String jobTitle;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String bio;
     private String linkedin;
     private String experience;
