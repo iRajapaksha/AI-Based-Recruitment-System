@@ -25,17 +25,23 @@ public class UserProfileService {
         return mapToDTO(profile);
     }
 
-    public UserProfileDto updateProfile(String email, Map<String,Object> updates) {
+    public UserProfileDto updateProfile(String email, UserProfileDto dto) {
         UserProfile profile = userProfileRepository.findById(email)
                 .orElseThrow(() -> new RuntimeException("User profile not found"));
 
-        updates.forEach((key, value) -> {
-            Field field = ReflectionUtils.findField(UserProfile.class, key);
-            if (field != null) {
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, profile, value);
-            }
-        });
+        if(dto.getFirstname() != null) profile.setFirstname(dto.getFirstname());
+        if(dto.getLastname() != null) profile.setLastname(dto.getLastname());
+        if(dto.getPhone() != null) profile.setPhone(dto.getPhone());
+        if(dto.getProfilePic() != null) profile.setProfilePic(dto.getProfilePic());
+        if(dto.getExperience() != null) profile.setExperience(dto.getExperience());
+        if(dto.getEducation() != null) profile.setEducation(dto.getEducation());
+        if(dto.getBio() != null) profile.setBio(dto.getBio());
+        if(dto.getLinkedin() != null) profile.setLinkedin(dto.getLinkedin());
+        if(dto.getWebsite() != null) profile.setWebsite(dto.getWebsite());
+        if(dto.getResume() != null) profile.setResume(dto.getResume());
+        if(dto.getJobTitle() != null) profile.setJobTitle(dto.getJobTitle());
+        if(dto.getLocation() != null) profile.setLocation(dto.getLocation());
+
         System.out.println("Email saved: " + profile.getEmail());
         userProfileRepository.save(profile);
         log.info("Updated profile for {}", email);

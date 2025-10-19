@@ -38,12 +38,13 @@ public class UserProfileController {
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<ApiResponse<UserProfileDto>> updateMyProfile(Authentication auth,
-                                             @RequestBody Map<String,Object> updates) {
+    public ResponseEntity<ApiResponse<UserProfileDto>> updateMyProfile(
+            Authentication auth,
+            @RequestBody UserProfileDto userProfileDto) {
 
 
         String email = auth.getName();
-        UserProfileDto profile = service.updateProfile(email, updates);
+        UserProfileDto profile = service.updateProfile(email, userProfileDto);
         return ResponseEntity.ok(new ApiResponse<>(true, "Profile updated successfully", profile));
 
     }
