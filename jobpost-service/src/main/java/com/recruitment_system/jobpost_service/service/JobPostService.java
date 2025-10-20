@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -189,9 +190,16 @@ public class JobPostService {
         if(dto.getRequirements() != null) post.setRequirements(dto.getRequirements());
         if(dto.getBenefits() != null) post.setBenefits(dto.getBenefits());
         if(dto.getDeadline() != null) post.setDeadline(dto.getDeadline());
-        if(dto.getSkills() != null) post.setSkills(dto.getSkills());
         if(dto.getOrgId() != null) post.setOrgId(dto.getOrgId());
         if(dto.getCurrency() != null) post.setCurrency(dto.getCurrency());
+
+        if (dto.getSkills() != null) {
+            List<Skill> skillEntities = dto.getSkills().stream()
+                    .map(skill -> skillRepository.findByName(skill.getName())
+                            .orElseGet(() -> skillRepository.save(new Skill(skill.getName()))))
+                    .collect(Collectors.toList());
+            post.setSkills(skillEntities);
+        }
         jobPostRepository.save(post);
         return mapToResponseDto(post);
     }
@@ -312,9 +320,16 @@ public class JobPostService {
         if(dto.getRequirements() != null) post.setRequirements(dto.getRequirements());
         if(dto.getBenefits() != null) post.setBenefits(dto.getBenefits());
         if(dto.getDeadline() != null) post.setDeadline(dto.getDeadline());
-        if(dto.getSkills() != null) post.setSkills(dto.getSkills());
         if(dto.getOrgId() != null) post.setOrgId(dto.getOrgId());
         if(dto.getCurrency() != null) post.setCurrency(dto.getCurrency());
+
+        if (dto.getSkills() != null) {
+            List<Skill> skillEntities = dto.getSkills().stream()
+                    .map(skill -> skillRepository.findByName(skill.getName())
+                            .orElseGet(() -> skillRepository.save(new Skill(skill.getName()))))
+                    .collect(Collectors.toList());
+            post.setSkills(skillEntities);
+        }
 
         jobPostRepository.save(post);
         return mapToResponseDto(post);
