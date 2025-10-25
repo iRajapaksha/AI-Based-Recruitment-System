@@ -106,7 +106,7 @@ public class JobPostController {
             @RequestParam(required = false) String datePosted,
             @RequestParam(required = false, defaultValue = "1") int pageNo,
             @RequestParam(required = false, defaultValue = "10") int pageSize
-    ) {
+    ){
         Sort sort = null;
         if(sortDirection.equalsIgnoreCase("ASC")){
             sort = Sort.by(orderBy).ascending();

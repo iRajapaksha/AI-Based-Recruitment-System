@@ -37,7 +37,7 @@ public class JobPost {
     private String createdBy;
     private String currency;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "job_post_skills",
             joinColumns = @JoinColumn(name = "job_post_id"),

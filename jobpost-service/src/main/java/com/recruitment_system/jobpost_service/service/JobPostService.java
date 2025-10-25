@@ -11,6 +11,9 @@ import com.recruitment_system.jobpost_service.repository.SkillRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +30,8 @@ public class JobPostService {
     private final JobPostRepository jobPostRepository;
     private final SkillRepository skillRepository;
     private final OrganizationInterface organizationInterface;
+
+    @CachePut(value = "JOBPOST_CACHE", key = "#result.postId")
     public JobPostResponseDto createJobPost(JobPostCreateDto post, String email) {
         List<Skill> skillEntities = post.getSkills().stream()
                 .map(skill -> skillRepository.findByName(skill.getName())
@@ -155,9 +160,10 @@ public class JobPostService {
                 .collect(Collectors.toList());
     }
 
-    public JobPostResponseDto deletePostById(Long id) {
-        JobPost post = jobPostRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Job post not found with ID: " + id));
+    @CacheEvict(value = "JOBPOST_CACHE", key = "#postId")
+    public JobPostResponseDto deletePostById(Long postId) {
+        JobPost post = jobPostRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Job post not found with ID: " + postId));
 
             JobPostResponseDto dto = mapToResponseDto(post);
             jobPostRepository.delete(post);
@@ -174,6 +180,7 @@ public class JobPostService {
         return dto;
     }
 
+    @CachePut(value = "JOBPOST_CACHE", key = "#result.postId")
     public JobPostResponseDto updateJobPost(Long postId, JobPostUpdateDto dto) {
         JobPost post = jobPostRepository.findById(postId)
                 .orElseThrow(()-> new RuntimeException("Job post not found"));
@@ -204,6 +211,8 @@ public class JobPostService {
         return mapToResponseDto(post);
     }
 
+
+    @Cacheable(value = "JOBPOST_CACHE", key = "#postId")
     public JobPostResponseDto getJobPostById(Long postId) {
         JobPost post = jobPostRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Job post not found with ID: " + postId));
