@@ -1,0 +1,167 @@
+version: "3"
+services:
+
+  # Microservices
+  service-registry:
+    image: irajapaksha/service-registry:latest
+    container_name: service-registry
+    restart: unless-stopped
+    ports:
+      - "8761:8761"
+    environment:
+      - EUREKA_INSTANCE_HOSTNAME=service-registry
+    networks:
+      - backend
+
+  auth-service:
+    image: irajapaksha/auth-service:v1
+    container_name: auth-service
+    restart: unless-stopped
+    ports:
+      - "9095:9095"
+    depends_on:
+      - mysql-db
+      - service-registry
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/recruitmentsystem
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - backend
+
+  user-service:
+    image: irajapaksha/user-service:v1
+    container_name: user-service
+    restart: unless-stopped
+    ports:
+      - "8085:8085"
+    depends_on:
+      - mysql-db
+      - service-registry
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/recruitmentsystem
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+    networks:
+      - backend
+
+  notification-service:
+    image: irajapaksha/notification-service:v1
+    container_name: notification-service
+    restart: unless-stopped
+    ports:
+      - "8105:8105"
+    depends_on:
+      - service-registry
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - backend
+
+  organization-service:
+    image: irajapaksha/organization-service:v1
+    container_name: organization-service
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    depends_on:
+      - mysql-db
+      - service-registry
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/recruitmentsystem
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+    networks:
+      - backend
+
+  jobpost-service:
+    image: irajapaksha/jobpost-service:v1
+    container_name: jobpost-service
+    restart: unless-stopped
+    ports:
+      - "8095:8095"
+    depends_on:
+      - mysql-db
+      - service-registry
+    #      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/recruitmentsystem
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - backend
+
+  screening-service:
+    image: irajapaksha/screening-service:v1
+    container_name: screening-service
+    restart: unless-stopped
+    ports:
+      - "8102:8102"
+    depends_on:
+      - mysql-db
+      - service-registry
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/recruitmentsystem
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - backend
+
+  resume-service:
+    image: irajapaksha/resume-service:v1
+    container_name: resume-service
+    restart: unless-stopped
+    ports:
+      - "8100:8100"
+    depends_on:
+      - mysql-db
+      - service-registry
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/recruitmentsystem
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    networks:
+      - backend
+
+  api-gateway:
+    image: irajapaksha/api-gateway:latest
+    container_name: api-gateway
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    depends_on:
+      - service-registry
+      - auth-service
+      - user-service
+      - jobpost-service
+      - organization-service
+      - screening-service
+      - resume-service
+      - notification-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+    networks:
+      - backend
