@@ -12,8 +12,5 @@ public class ApplicationDto {
     @NotNull(message = "Post ID is required")
     private Long postId;
 
-    @NotNull(message = "User Id is required")
-    private Long userId;
-
     private List<DocumentDto> documentList;
 }

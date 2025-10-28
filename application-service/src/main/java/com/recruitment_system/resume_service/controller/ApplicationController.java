@@ -27,7 +27,8 @@ public class ApplicationController {
     }
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<ApiResponse<List<ApplicationResponseDto>>> getAllByPostId(@PathVariable Long postId){
+    public ResponseEntity<ApiResponse<List<ApplicationResponseDto>>> getAllByPostId(
+            @PathVariable Long postId){
         return ResponseEntity.ok(
                 new ApiResponse<>(true,"Get all applications for post.",
                         applicationService.getByPostId(postId))

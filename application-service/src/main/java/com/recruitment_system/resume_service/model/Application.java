@@ -14,8 +14,13 @@ public class Application {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long postId;
-    private Long userId;
+    private String userEmail;
     private LocalDateTime appliedAt;
+    private String firstName;
+    private String lastName;
+    private String githubUrl;
+    private String telephone;
+    private String address;
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ApplicationDocument> documentList = new ArrayList<>();
 }

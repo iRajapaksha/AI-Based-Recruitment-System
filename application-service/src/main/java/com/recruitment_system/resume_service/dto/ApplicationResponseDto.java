@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,7 +11,12 @@ import java.util.List;
 public class ApplicationResponseDto {
     private Long applicationId;
     private Long postId;
-    private Long userId;
+    private String userEmail;
+    private String firstName;
+    private String lastName;
+    private String githubUrl;
+    private String telephone;
+    private String address;
     private LocalDateTime appliedAt;
     private List<DocumentDto> documentList;
 }

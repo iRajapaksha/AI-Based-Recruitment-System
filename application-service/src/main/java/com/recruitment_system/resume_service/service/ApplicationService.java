@@ -3,12 +3,15 @@ package com.recruitment_system.resume_service.service;
 import com.recruitment_system.resume_service.dto.ApplicationDto;
 import com.recruitment_system.resume_service.dto.ApplicationResponseDto;
 import com.recruitment_system.resume_service.dto.DocumentDto;
+import com.recruitment_system.resume_service.dto.UserProfileDto;
+import com.recruitment_system.resume_service.feign.UserInterface;
 import com.recruitment_system.resume_service.model.Application;
 import com.recruitment_system.resume_service.model.ApplicationDocument;
 import com.recruitment_system.resume_service.repository.ApplicationDocumentRepository;
 import com.recruitment_system.resume_service.repository.ApplicationRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,10 +22,17 @@ import java.util.stream.Collectors;
 public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final ApplicationDocumentRepository applicationDocumentRepository;
+    private final UserInterface userInterface;
     public ApplicationResponseDto saveApplication(ApplicationDto dto){
+        UserProfileDto user = userInterface.getMyProfile().getBody().getData();
         Application application = Application.builder()
                 .postId(dto.getPostId())
-                .userId(dto.getUserId())
+                .userEmail(user.getEmail())
+                .firstName(user.getFirstname())
+                .lastName(user.getLastname())
+                .githubUrl(user.getGithubUrl())
+                .telephone(user.getPhone())
+                .address(user.getLocation())
                 .appliedAt(LocalDateTime.now())
                 .build();
         if (dto.getDocumentList() != null) {
@@ -78,7 +88,12 @@ public class ApplicationService {
         return ApplicationResponseDto.builder()
                 .applicationId(application.getId())
                 .postId(application.getPostId())
-                .userId(application.getUserId())
+                .userEmail(application.getUserEmail())
+                .firstName(application.getFirstName())
+                .lastName(application.getLastName())
+                .githubUrl(application.getGithubUrl())
+                .telephone(application.getTelephone())
+                .address(application.getAddress())
                 .appliedAt(application.getAppliedAt())
                 .documentList(application.getDocumentList().stream()
                         .map(doc -> DocumentDto.builder()
