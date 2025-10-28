@@ -23,6 +23,6 @@ public class EmailGenerationResponseDto {
     public static class EmailItem {
         private String candidate_name;
         private String email;
-        private String generatedEmail;
+        private String generated_email;
     }
 }

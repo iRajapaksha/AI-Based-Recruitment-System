@@ -1,4 +1,4 @@
-package com.recruitment_system.user_service.dto;
+package com.recruitment_system.screening_service.dto;
 
 import lombok.Builder;
 import lombok.Getter;

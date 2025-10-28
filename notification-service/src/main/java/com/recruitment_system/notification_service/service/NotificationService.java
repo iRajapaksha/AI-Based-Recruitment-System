@@ -1,8 +1,9 @@
 package com.recruitment_system.notification_service.service;
 
-
+import com.recruitment_system.event.ConfirmationEmailEvent;
 import com.recruitment_system.event.SendVerificationEmailEvent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationService {
 
     private final JavaMailSender mailSender;
@@ -22,21 +24,55 @@ public class NotificationService {
         mailSender.send(message);
     }
 
-    @KafkaListener(topics = "notification",groupId = "notificationId")
-    public void sendVerificationEmail(SendVerificationEmailEvent event){
-        String email = event.getEmail();
-        String token = event.getToken();
-        System.out.println("notfication service triggered: " +email);
+    @KafkaListener(
+            topics = "notification",
+            groupId = "notificationId",
+            containerFactory = "verificationKafkaListenerFactory"
+    )
+    public void sendVerificationEmail(SendVerificationEmailEvent sendVerificationEmailEvent){
+        String email = sendVerificationEmailEvent.getEmail();
+        String token = sendVerificationEmailEvent.getToken();
+        log.info("notification service triggered for verification email to {}", email);
         String link = String.format("http://31.97.191.209:9090/auth/verify/%s", token);
-        SimpleMailMessage message = new SimpleMailMessage();
-        //  message.setFrom("senderemil");
-        message.setTo(email);
-        message.setSubject("AI Recruitment System Registration");
-        message.setText("Welcome to AI recruitment system. Click the link to verify your email: " + link);
 
-        mailSender.send(message);
+        String subject = "AI Recruitment System Registration";
+        String body = "Welcome to AI recruitment system. Click the link to verify your email: " + link;
 
-
+        try {
+            sendEmail(email, subject, body);
+            log.info("Verification email sent to {}", email);
+        } catch (Exception ex) {
+            log.error("Failed to send verification email to {} : {}", email, ex.getMessage(), ex);
+            // optionally rethrow or perform retry logic
+            throw new RuntimeException(ex);
+        }
     }
-}
 
+    @KafkaListener(
+            topics = "confirmation-email",
+            groupId = "notification-group",
+            containerFactory = "confirmationKafkaListenerFactory"
+    )
+    public void handleConfirmationEmail(ConfirmationEmailEvent confirmationEmailEvent) {
+        try {
+            log.info("Received email event - subject:{}  to:{}",
+                    confirmationEmailEvent.getSubject(),
+                    confirmationEmailEvent.getEmail());
+
+            // Send the email using helper
+            sendEmail(confirmationEmailEvent.getEmail(),
+                    confirmationEmailEvent.getSubject(),
+                    confirmationEmailEvent.getBody());
+
+            log.info("Confirmation email successfully sent to {}", confirmationEmailEvent.getEmail());
+
+        } catch (Exception ex) {
+            log.error("Failed to send email to {}: {}",
+                    confirmationEmailEvent.getEmail(),
+                    ex.getMessage(),
+                    ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
+}

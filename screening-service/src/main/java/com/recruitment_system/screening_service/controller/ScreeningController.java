@@ -1,15 +1,13 @@
 package com.recruitment_system.screening_service.controller;
 
 import com.recruitment_system.dto.ApiResponse;
-import com.recruitment_system.screening_service.dto.CandidateResultDto;
-import com.recruitment_system.screening_service.model.CandidateResult;
+import com.recruitment_system.screening_service.dto.ScreeningResultDto;
 import com.recruitment_system.screening_service.service.ScreeningService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,14 +23,30 @@ public class ScreeningController {
 //        return ResponseEntity.ok().build();
 //    }
 
-//    @GetMapping("/job-post/{jobPostId}")
-//    public List<CandidateResult> getRankedList(@PathVariable Long jobPostId) {
-//        return screeningService.getRankedResults(jobPostId);
-//    }
+    @GetMapping("/job-post/{jobPostId}")
+    public ResponseEntity<ApiResponse<List<ScreeningResultDto>>> getRankedList(
+            @PathVariable Long jobPostId) {
+        return ResponseEntity.ok(new ApiResponse<>(true,
+                "Ranked list fetched successfully",
+                screeningService.getRankedList(jobPostId)));
+    }
 
     @PostMapping("/run/{postId}")
-    public ResponseEntity<ApiResponse<List<CandidateResultDto>>> runScreeningManually(@PathVariable Long postId) {
-        return ResponseEntity.ok(new ApiResponse<>(true,"Screening run successfully",screeningService.runScreeningManually(postId)));
+    public ResponseEntity<ApiResponse<List<ScreeningResultDto>>> runScreeningManually(
+            @PathVariable Long postId) {
+        return ResponseEntity.ok(new ApiResponse<>(true,
+                "Screening run successfully",
+                screeningService.runScreeningManually(postId)));
+    }
+
+    @PostMapping("/job-post/{jobPostId}/confirm")
+    public ResponseEntity<ApiResponse<Void>> confirmApplicants(
+            @PathVariable Long jobPostId,
+            @RequestBody List<String> selectedApplicationEmails) {
+        screeningService.confirmApplicants(jobPostId,selectedApplicationEmails);
+        return ResponseEntity.ok(new ApiResponse<>(true,
+                "Applicants confirmation email sent successfully",
+                null));
     }
 }
 

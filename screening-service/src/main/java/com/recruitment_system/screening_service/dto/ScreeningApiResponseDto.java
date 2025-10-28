@@ -9,6 +9,6 @@ import java.util.List;
 
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class ScreeningApiResponseDto {
-    private List<CandidateResultDto> results;
+    private List<ScreeningResultDto> results;
     private Boolean success;
 }

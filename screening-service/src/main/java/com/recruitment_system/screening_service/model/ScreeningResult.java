@@ -18,6 +18,10 @@ public class ScreeningResult {
     private Long jobPostId;
     private Long applicationId;
     private String candidate_name;
+    @Lob @Column(columnDefinition = "TEXT")
+    private String cv_summary;
+    @Lob @Column(columnDefinition = "TEXT")
+    private String github_summary;
     private String email;
     @Lob @Column(columnDefinition = "TEXT")
     private String match_analysis;

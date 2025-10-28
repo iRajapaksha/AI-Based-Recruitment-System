@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.kafka.annotation.KafkaListener;
 
 @SpringBootApplication
+
 public class NotificationServiceApplication {
 
 	public static void main(String[] args) {

@@ -13,8 +13,10 @@ import java.util.List;
 @FeignClient(name = "APPLICATION-SERVICE")
 public interface ApplicationInterface {
     @GetMapping("/applications/post/{postId}")
-    public ResponseEntity<ApiResponse<List<ApplicationResponseDto>>> getAllByPostId(@PathVariable Long postId);
+    public ResponseEntity<ApiResponse<List<ApplicationResponseDto>>> getAllByPostId(
+            @PathVariable Long postId);
 
     @DeleteMapping("/applications/{postId}")
-    public ResponseEntity<ApiResponse<List<ApplicationResponseDto>>> deleteAllByPostId(@PathVariable Long postId);
+    public ResponseEntity<ApiResponse<List<ApplicationResponseDto>>> deleteAllByPostId(
+            @PathVariable Long postId);
 }
