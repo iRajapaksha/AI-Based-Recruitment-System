@@ -1,0 +1,9 @@
+version: "3.9"
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  grafana-storage:

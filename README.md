@@ -20,7 +20,7 @@ AI-Based-Recruitment-System/
 ├── jobpost-service/
 ├── organization-service/
 ├── resume-service/
-|── notification-service/
+├── notification-service/
 ├── screening-service/
 └── docker-compose.yml
 ````
@@ -40,17 +40,17 @@ AI-Based-Recruitment-System/
 
 
 ### Microservices List
-| Microservice      | Description                                    |    
-|-------------------|------------------------------------------------|
-|Eureka Server      |Service discovery and registration              |
-| API Gateway       | Routes client requests to respective microservices |
-|Auth Service      | Handles registration, login, JWT auth          |
-|User Service| Manages user profiles |
-|Organization Service| Manages company profiles |
-|Jobposting Service| CRUD operations for job postings |
-|Resume Service | Manages candidate resumes |
-|Notification Service | Handles email notifications |
-|Screening Service |Automated interview screening & scheduling|
+| Microservice         | Description                                        |    
+|----------------------|----------------------------------------------------|
+| Service Registry     | Service discovery and registration                 |
+| API Gateway          | Routes client requests to respective microservices |
+| Auth Service         | Handles registration, login, JWT auth              |
+| User Service         | Manages user profiles                              |
+| Organization Service | Manages company profiles                           |
+| Jobpost Service      | CRUD operations for job postings                   |
+| Application Service  | Manages candidate applications                     |
+| Notification Service | Handles email notifications                        |
+| Screening Service    | Automated application screening & scheduling       |
 
 
 ### Setup & Run
