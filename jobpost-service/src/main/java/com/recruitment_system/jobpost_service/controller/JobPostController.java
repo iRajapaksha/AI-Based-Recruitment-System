@@ -1,9 +1,6 @@
 package com.recruitment_system.jobpost_service.controller;
 
-import com.recruitment_system.jobpost_service.dto.ApiResponse;
-import com.recruitment_system.jobpost_service.dto.JobPostUpdateDto;
-import com.recruitment_system.jobpost_service.dto.JobPostCreateDto;
-import com.recruitment_system.jobpost_service.dto.JobPostResponseDto;
+import com.recruitment_system.jobpost_service.dto.*;
 import com.recruitment_system.jobpost_service.service.JobPostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -96,7 +93,7 @@ public class JobPostController {
     }
 
     @GetMapping("/get/filter")
-    public ResponseEntity<ApiResponse<List<JobPostResponseDto>>> filterJobPosts(
+    public ResponseEntity<ApiResponse<PaginatedResponse<JobPostResponseDto>>> filterJobPosts(
             @RequestParam(required = false) String jobTitle,
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String experienceLevel,
@@ -106,20 +103,21 @@ public class JobPostController {
             @RequestParam(required = false) String datePosted,
             @RequestParam(required = false, defaultValue = "1") int pageNo,
             @RequestParam(required = false, defaultValue = "10") int pageSize
-    ){
-        Sort sort = null;
-        if(sortDirection.equalsIgnoreCase("ASC")){
-            sort = Sort.by(orderBy).ascending();
-        } else{
-            sort = Sort.by(orderBy).descending();
-        }
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize,sort);
-        List<JobPostResponseDto> filteredPosts = jobPostService.filterJobPosts(jobTitle,
-                location, experienceLevel, workType, orderBy, datePosted,pageable);
+    ) {
+        Sort sort = sortDirection.equalsIgnoreCase("ASC")
+                ? Sort.by(orderBy).ascending()
+                : Sort.by(orderBy).descending();
+
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
+
+        PaginatedResponse<JobPostResponseDto> response =
+                jobPostService.filterJobPosts(jobTitle, location, experienceLevel, workType, orderBy, datePosted, pageable);
+
         return ResponseEntity.ok(
-                new ApiResponse<>(true, "Filtered job posts", filteredPosts)
+                ApiResponse.success("Filtered job posts", response)
         );
     }
+
 
     @GetMapping("/get/org/{orgId}")
     public ResponseEntity<ApiResponse<List<JobPostResponseDto>>> getByOrganization(@PathVariable Long orgId) {

@@ -3,6 +3,7 @@ package com.recruitment_system.jobpost_service.service;
 import com.recruitment_system.jobpost_service.dto.JobPostUpdateDto;
 import com.recruitment_system.jobpost_service.dto.JobPostCreateDto;
 import com.recruitment_system.jobpost_service.dto.JobPostResponseDto;
+import com.recruitment_system.jobpost_service.dto.PaginatedResponse;
 import com.recruitment_system.jobpost_service.feign.OrganizationInterface;
 import com.recruitment_system.jobpost_service.model.JobPost;
 import com.recruitment_system.jobpost_service.model.Skill;
@@ -14,6 +15,7 @@ import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
@@ -250,13 +252,13 @@ public class JobPostService {
                 .build();
     }
 
-    public List<JobPostResponseDto> filterJobPosts(String jobTitle,
-                                                   String location,
-                                                   String experienceLevel,
-                                                   String workType,
-                                                   String orderBy,
-                                                   String datePosted,
-                                                   Pageable pageable) {
+    public PaginatedResponse<JobPostResponseDto> filterJobPosts(String jobTitle,
+                                                                String location,
+                                                                String experienceLevel,
+                                                                String workType,
+                                                                String orderBy,
+                                                                String datePosted,
+                                                                Pageable pageable) {
         Specification<JobPost> spec = (root, query, cb) -> cb.conjunction();
 
         if (jobTitle != null && !jobTitle.isEmpty()) {
@@ -292,11 +294,23 @@ public class JobPostService {
             }
         }
 
-        List<JobPost> filteredJobPosts = jobPostRepository.findAll(spec, pageable).getContent();
+        // Get full Page object
+        Page<JobPost> jobPostPage = jobPostRepository.findAll(spec, pageable);
 
-        return filteredJobPosts.stream()
+        // Convert to DTO
+        List<JobPostResponseDto> jobPostDtos = jobPostPage.getContent()
+                .stream()
                 .map(this::mapToResponseDto)
                 .collect(Collectors.toList());
+
+        // Return with pagination metadata
+        return new PaginatedResponse<>(
+                jobPostDtos,
+                jobPostPage.getNumber() + 1,
+                jobPostPage.getTotalPages(),
+                jobPostPage.getTotalElements(),
+                jobPostPage.getSize()
+        );
 
     }
 
