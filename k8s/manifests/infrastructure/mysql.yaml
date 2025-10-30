@@ -1,9 +1,51 @@
+# mysql.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secrets
+  namespace: recruitment
+type: Opaque
+data:
+  mysql_root_password: cm9vdA==  # "root" base64 example - replace for prod
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv-volume
+  namespace: recruitment
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: standard
+  hostPath:
+    path: "/mnt/data"    # OK for local Docker Desktop / minikube host; avoid in cloud
+  persistentVolumeReclaimPolicy: Retain
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+  namespace: recruitment
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 1Gi
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: mysql
+  namespace: recruitment
   labels:
     app: mysql
-  name: mysql
 spec:
   replicas: 1
   selector:
@@ -11,15 +53,16 @@ spec:
       app: mysql
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: mysql
     spec:
       containers:
-        - image: mysql:8.0
-          name: mysql
+        - name: mysql
+          image: mysql:8.0
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3306
+              name: mysql
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -31,59 +74,49 @@ spec:
           volumeMounts:
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD"
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            failureThreshold: 6
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD"
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 5
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
             claimName: mysql-pv-claim
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
+  name: mysql
+  namespace: recruitment
   labels:
     app: mysql
-  name: mysql
 spec:
-  ports:
-      port: 3306
-      protocol: TCP
-      targetPort: 3306
   selector:
     app: mysql
-
----
-apiVersion: v1
-data:
-  mysql_root_password: cm9vdA==
-kind: Secret
-metadata:
-  name: mysql-secrets
-
-
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mysql-pv-claim
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: mysql-pv-volume
-spec:
-  storageClassName: 'standard'
-  capacity:
-      storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/mnt/data"
-
-
-
-
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+  type: ClusterIP
