@@ -7,9 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +35,7 @@ public class UserProfileService {
         if(dto.getEducation() != null) profile.setEducation(dto.getEducation());
         if(dto.getBio() != null) profile.setBio(dto.getBio());
         if(dto.getLinkedin() != null) profile.setLinkedin(dto.getLinkedin());
-        if(dto.getWebsite() != null) profile.setWebsite(dto.getWebsite());
+        if(dto.getGithubUrl() != null) profile.setGithubUrl(dto.getGithubUrl());
         if(dto.getResume() != null) profile.setResume(dto.getResume());
         if(dto.getJobTitle() != null) profile.setJobTitle(dto.getJobTitle());
         if(dto.getLocation() != null) profile.setLocation(dto.getLocation());
@@ -69,7 +67,7 @@ public class UserProfileService {
                 .firstname(profile.getFirstname())
                 .lastname(profile.getLastname())
                 .linkedin(profile.getLinkedin())
-                .website(profile.getWebsite())
+                .githubUrl(profile.getGithubUrl())
                 .resume(profile.getResume())
                 .email(profile.getEmail())
                 .jobTitle(profile.getJobTitle())

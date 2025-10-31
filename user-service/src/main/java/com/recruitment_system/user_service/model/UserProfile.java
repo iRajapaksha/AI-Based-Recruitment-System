@@ -25,7 +25,7 @@ public class UserProfile {
     private String linkedin;
     private String experience;
     private String education;
-    private String website;
+    private String githubUrl;
     private String resume;
 
 }
