@@ -40,17 +40,18 @@ AI-Based-Recruitment-System/
 
 
 ### Microservices List
-| Microservice         | Description                                        |    
-|----------------------|----------------------------------------------------|
-| Service Registry     | Service discovery and registration                 |
+| Microservice         | Description |    
+|----------------------|-----------|
+| Service Registry     | Service discovery and registration |
 | API Gateway          | Routes client requests to respective microservices |
-| Auth Service         | Handles registration, login, JWT auth              |
-| User Service         | Manages user profiles                              |
-| Organization Service | Manages company profiles                           |
-| Jobpost Service      | CRUD operations for job postings                   |
-| Application Service  | Manages candidate applications                     |
-| Notification Service | Handles email notifications                        |
-| Screening Service    | Automated application screening & scheduling       |
+| Auth Service         | Handles registration, login, JWT auth |
+| User Service         | Manages user profiles |
+| Organization Service | Manages company profiles |
+| Jobpost Service      | CRUD operations for job postings |
+| Application Service  | Manages candidate applications |
+| Notification Service | Handles email notifications |
+| Screening Service    | Automated application screening & scheduling |
+|Interview Service    | Store interview transcript|
 
 
 ### Setup & Run
