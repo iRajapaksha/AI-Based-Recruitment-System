@@ -51,7 +51,7 @@ AI-Based-Recruitment-System/
 | Application Service  | Manages candidate applications |
 | Notification Service | Handles email notifications |
 | Screening Service    | Automated application screening & scheduling |
-|Interview Service    | Store interview transcript|
+| Transcript Service   | Store interview transcript|
 
 
 ### Setup & Run
