@@ -2,16 +2,40 @@ global:
   scrape_interval: 10s
   evaluation_interval: 10s
 
+#scrape_configs:
+#  - job_name: 'auth-service'
+#    metrics_path: '/actuator/prometheus'
+#    static_configs:
+#      - targets: ['auth-service:9095']
+#        labels:
+#          application: 'auth-service application'
+#  - job_name: 'user-service'
+#    metrics_path: '/actuator/prometheus'
+#    static_configs:
+#      - targets: ['user-service:8085']
+#        labels:
+#          application: 'user-service application'
+#  - job_name: 'api-gateway'
+#    metrics_path: '/actuator/prometheus'
+#    static_configs:
+#      - targets: ['api-gateway:8080']
+#        labels:
+#          application: 'api-gateway application'
+
+
 scrape_configs:
-  - job_name: 'auth-service'
-    metrics_path: '/actuator/prometheus'
+  - job_name: "spring-boot-microservices"
+    metrics_path: "/actuator/prometheus"
+    scrape_interval: 5s
     static_configs:
-      - targets: ['auth-service:8081']
-        labels:
-          application: 'auth-service application'
-  - job_name: 'user-service'
-    metrics_path: '/actuator/prometheus'
-    static_configs:
-      - targets: ['user-service:8082']
-        labels:
-          application: 'user-service application'
+      - targets:
+          - "host.docker.internal:9095"  # auth-service
+          - "host.docker.internal:8085"  # user-servicegit ini
+          - "host.docker.internal:9040"  # transcript-service
+          - "host.docker.internal:8095"  # jobpost-service
+          - "host.docker.internal:8105"  # notification-service
+          - "host.docker.internal:8090"  # organization-service
+          - "host.docker.internal:8102"  # screening-service
+          - "host.docker.internal:8100"  # application-service
+
+

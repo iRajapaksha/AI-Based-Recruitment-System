@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/actuator/prometheus", "/actuator/health").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/set-role").authenticated() // allow authenticated but unset role users
                         .anyRequest().authenticated()
                 )

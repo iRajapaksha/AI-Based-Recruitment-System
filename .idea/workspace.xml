@@ -5,53 +5,38 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ec0605b1-d08d-4de5-b86e-9644817c97ab" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/config/GlobalExceptionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/dto/ApiResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/dto/RoleUpdateRequestDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/dto/UserProfileDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/feign/UserInterface.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/model/AuthProvider.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/model/Role.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/security/JwtAuthenticationFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/security/OAuth2LoginSuccessHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/service/CustomOAuth2UserService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/service/CustomOauthUser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application-docker.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notification-service/src/main/resources/application-docker.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/organization-service/src/main/resources/application-docker.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resume-service/src/main/resources/application-docker.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/screening-service/src/main/resources/application-docker.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-registry/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user-service/src/main/resources/application-docker.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/maven.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/maven.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/AuthServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/AuthServiceApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/dto/AuthRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/dto/AuthRequestDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/dto/AuthResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/dto/AuthResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/dto/RegisterRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/dto/RegisterRequestDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/dto/RegisterResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/dto/RegisterResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/model/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/model/UserEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/repository/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/security/JWTUtility.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/security/JwtUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/recruitment_system/auth_service/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/application-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/application-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/monitoring-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker/monitoring-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/interview-service/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/interview-service/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/interview-service/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/interview-service/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/interview-service/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/interview-service/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/interview-service/src/main/java/com/recruitment_system/interview_service/InterviewServiceApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/interview-service/src/main/resources/application-docker.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/interview-service/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/interview-service/src/test/java/com/recruitment_system/interview_service/InterviewServiceApplicationTests.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/jobpost-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/jobpost-service/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/jobpost-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/jobpost-service/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/notification-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/notification-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/organization-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/organization-service/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/organization-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/organization-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resume-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/resume-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resume-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/resume-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prometheus.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/prometheus/prometheus.yml" beforeDir="false" afterPath="$PROJECT_DIR$/prometheus/prometheus.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/screening-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/screening-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screening-service/src/main/java/com/recruitment_system/screening_service/service/AiScreeningClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/screening-service/src/main/java/com/recruitment_system/screening_service/service/AiScreeningClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/screening-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/screening-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service-registry/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service-registry/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service-registry/src/main/java/com/recruitment_system/service_registry/ServiceRegistryApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/service-registry/src/main/java/com/recruitment_system/service_registry/ServiceRegistryApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shared-module/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/shared-module/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transcript-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/transcript-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transcript-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/transcript-service/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/recruitment_system/user_service/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/recruitment_system/user_service/security/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -64,6 +49,7 @@
       <list>
         <option value="Interface" />
         <option value="Class" />
+        <option value="Dockerfile" />
       </list>
     </option>
   </component>
@@ -92,7 +78,7 @@
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;jdk.selected.JAVA_MODULE&quot;: &quot;21&quot;,
     &quot;last_directory_selection&quot;: &quot;D:/Projects/recruitment-system/common-security/src/main/java&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Projects/recruitment-system/organization-service&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Projects/recruitment-system&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
