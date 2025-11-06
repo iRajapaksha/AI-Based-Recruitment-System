@@ -1,5 +1,6 @@
 package com.recruitment_system.resume_service.dto;
 
+import com.recruitment_system.resume_service.model.ApplicationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,4 +20,7 @@ public class ApplicationResponseDto {
     private String address;
     private LocalDateTime appliedAt;
     private List<DocumentDto> documentList;
+    private ApplicationStatus applicationStatus;
+    private Double screeningScore;
+    private Double interviewScore;
 }

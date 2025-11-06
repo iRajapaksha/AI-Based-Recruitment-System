@@ -23,4 +23,8 @@ public class Application {
     private String address;
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ApplicationDocument> documentList = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    private ApplicationStatus applicationStatus;
+    private Double screeningScore;
+    private Double interviewScore;
 }

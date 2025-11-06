@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface ApplicationRepository extends JpaRepository<Application,Long> {
 
     Optional<List<Application>> findByPostId(Long postId);
+    Optional<Application> findByUserEmailAndPostId(String userEmail, Long postId);
 
     @Modifying
     @Transactional

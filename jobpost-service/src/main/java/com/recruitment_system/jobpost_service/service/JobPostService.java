@@ -37,7 +37,7 @@ public class JobPostService {
     public JobPostResponseDto createJobPost(JobPostCreateDto post, String email) {
         List<Skill> skillEntities = post.getSkills().stream()
                 .map(skill -> skillRepository.findByName(skill.getName())
-                        .orElseGet(() -> new Skill(skill.getName())))
+                        .orElseGet(() -> skillRepository.save(new Skill(skill.getName()))))
                 .collect(Collectors.toList());
 
         ResponseEntity<String> response = organizationInterface.getLogo(post.getOrgId());

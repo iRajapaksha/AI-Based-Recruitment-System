@@ -8,12 +8,12 @@ import com.recruitment_system.resume_service.dto.UserProfileDto;
 import com.recruitment_system.resume_service.feign.UserInterface;
 import com.recruitment_system.resume_service.model.Application;
 import com.recruitment_system.resume_service.model.ApplicationDocument;
+import com.recruitment_system.resume_service.model.ApplicationStatus;
 import com.recruitment_system.resume_service.repository.ApplicationDocumentRepository;
 import com.recruitment_system.resume_service.repository.ApplicationRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,6 +39,9 @@ public class ApplicationService {
                 .telephone(user.getPhone())
                 .address(user.getLocation())
                 .appliedAt(LocalDateTime.now())
+                .applicationStatus(ApplicationStatus.PENDING)
+                .screeningScore(null)
+                .interviewScore(null)
                 .build();
         if (dto.getDocumentList() != null) {
             application.setDocumentList(
@@ -102,6 +105,9 @@ public class ApplicationService {
                 .telephone(application.getTelephone())
                 .address(application.getAddress())
                 .appliedAt(application.getAppliedAt())
+                .applicationStatus(application.getApplicationStatus())
+                .screeningScore(application.getScreeningScore())
+                .interviewScore(application.getInterviewScore())
                 .documentList(application.getDocumentList().stream()
                         .map(doc -> DocumentDto.builder()
                                 .id(doc.getDocumentId())

@@ -12,8 +12,6 @@ public class Skill {
 
     @Column(unique = true, nullable = false)
     private String name;
-
-
     public Skill(String name) {
         this.name = name;
     }

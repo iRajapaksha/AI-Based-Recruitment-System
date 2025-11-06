@@ -2,7 +2,10 @@ package com.recruitment_system.screening_service.service;
 
 import com.recruitment_system.dto.JobPostResponseDto;
 import com.recruitment_system.screening_service.dto.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.ZoneId;
@@ -58,19 +61,30 @@ public class  AiScreeningClient {
 
         System.out.println("Payload sent to screening service: " + root);
 
-        // Send POST request
-        ScreeningApiResponseDto response = restTemplate.postForObject(
-                "http://15.235.210.227:8000/trigger_pipeline",
-                root,
-                ScreeningApiResponseDto.class
-        );
+        try {
+            // Send POST request
+            ResponseEntity<ScreeningApiResponseDto> responseEntity = restTemplate.postForEntity(
+                    "http://15.235.210.227:8000/trigger_pipeline",
+                    root,
+                    ScreeningApiResponseDto.class
+            );
+            if (!responseEntity.getStatusCode().is2xxSuccessful()) {
+                throw new RuntimeException("Screening service returned error: " + responseEntity.getStatusCode());
+            }
+            ScreeningApiResponseDto response = responseEntity.getBody();
 
-        if (response != null && response.getSuccess()) {
-            return response.getResults();
-        } else {
-            throw new RuntimeException("Failed to get a valid response from the screening service");
-        }
-    }
+            if (response != null && response.getSuccess()) {
+                return response.getResults();
+            } else {
+                throw new RuntimeException("Failed to get a valid response from the screening service");
+            }
+        }catch (HttpClientErrorException | HttpServerErrorException ex) {
+            throw new RuntimeException("Screening API error: " + ex.getStatusCode() + " - " + ex.getResponseBodyAsString(), ex);
+        } catch (Exception ex) {
+            throw new RuntimeException("Unexpected error while calling screening service: " + ex.getMessage(), ex);
+
+
+        }}
 
     private static Map<String, Object> getObjectMap(ApplicationResponseDto app) {
         Map<String,Object> candidateMap = new HashMap<>();

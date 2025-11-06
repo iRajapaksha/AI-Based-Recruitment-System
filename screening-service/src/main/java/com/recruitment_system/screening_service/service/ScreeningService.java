@@ -3,6 +3,7 @@ package com.recruitment_system.screening_service.service;
 import com.recruitment_system.dto.JobPostResponseDto;
 import com.recruitment_system.event.ConfirmationEmailEvent;
 import com.recruitment_system.event.PostDeadlineEvent;
+import com.recruitment_system.event.SaveScreeningResultEvent;
 import com.recruitment_system.screening_service.dto.ApplicationResponseDto;
 import com.recruitment_system.screening_service.dto.EmailContent;
 import com.recruitment_system.screening_service.dto.ScreeningResultDto;
@@ -15,8 +16,8 @@ import com.recruitment_system.screening_service.repository.EmailRequestRepositor
 import com.recruitment_system.screening_service.repository.ScreeningResultRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ScreeningService {
@@ -34,22 +36,11 @@ public class ScreeningService {
     private final AiScreeningClient aiScreeningClient;
     private final ScreeningResultRepository resultRepository;
     private final EmailRequestRepository emailRequestRepository;
-    private final KafkaTemplate<String, ConfirmationEmailEvent> kafkaTemplate;
+    private final EventProducer eventProducer;
 
 
 
-    @KafkaListener(topics = "post-deadline-event", groupId = "screening-service-group")
-    public void screenJobPost(PostDeadlineEvent event) {
-        Long jobPostId = event.getJobPostId();
-        try {
-            System.out.println("Received Kafka event for job post ID: " + jobPostId);
-            processScreening(jobPostId);
-        } catch (Exception ex) {
-            System.err.println("Error processing screening for job post ID " +
-                    jobPostId + ": " + ex.getMessage());
-        }
 
-    }
 
     public List<ScreeningResultDto> runScreeningManually(Long postId) {
         try {
@@ -62,7 +53,7 @@ public class ScreeningService {
         }
     }
 
-    private List<ScreeningResultDto> processScreening(Long jobPostId) {
+    List<ScreeningResultDto> processScreening(Long jobPostId) {
         var jobPost = jobPostInterface.getJobPostById(jobPostId).getBody().getData();
         var resumes = applicationInterface.getAllByPostId(jobPostId).getBody().getData();
 
@@ -80,8 +71,12 @@ public class ScreeningService {
                     .match_analysis(aiResult.getMatch_analysis())
                     .build();
 
-            System.out.println("Screened result: " + result);
             resultRepository.save(result);
+            log.info("Saved screening result for candidate: " + result.getCandidate_name());
+            eventProducer.sendSaveScreeningResultEvent(new SaveScreeningResultEvent(
+                    jobPostId,
+                    result.getEmail(),
+                    result.getScore()));
             results.add(result);
         }
 
@@ -143,7 +138,7 @@ public class ScreeningService {
                     content.getSubject(),
                     content.getBody()
             );
-            kafkaTemplate.send("confirmation-email", event.getEmail(), event);
+            eventProducer.sendConfirmationEmailEvent(event);
         }
 
     }
