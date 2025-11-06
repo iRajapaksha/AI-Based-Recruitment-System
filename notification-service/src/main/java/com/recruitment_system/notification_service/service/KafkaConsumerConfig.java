@@ -4,6 +4,7 @@ import com.recruitment_system.event.ConfirmationEmailEvent;
 import com.recruitment_system.event.SendVerificationEmailEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -17,9 +18,10 @@ import java.util.Map;
 @Configuration
 public class KafkaConsumerConfig {
 
-    private final String bootstrapServers = "localhost:9092";
+    @Value("${spring.kafka.bootstrap-servers}")
+    private String bootstrapServers;
 
-    // ✅ Consumer for SendVerificationEmailEvent
+    // Consumer for SendVerificationEmailEvent
     @Bean
     public ConsumerFactory<String, SendVerificationEmailEvent> verificationConsumerFactory() {
         JsonDeserializer<SendVerificationEmailEvent> deserializer =
@@ -44,7 +46,7 @@ public class KafkaConsumerConfig {
         return factory;
     }
 
-    // ✅ Consumer for ConfirmationEmailEvent
+    // Consumer for ConfirmationEmailEvent
     @Bean
     public ConsumerFactory<String, ConfirmationEmailEvent> confirmationConsumerFactory() {
         JsonDeserializer<ConfirmationEmailEvent> deserializer =

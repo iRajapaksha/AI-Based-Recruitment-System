@@ -23,7 +23,6 @@ public class TranscriptService {
 
     }
 
-
     public TranscriptResponseDto getTranscriptByApplicationId(Long applicationId) {
         Transcript transcript = transcriptRepository.findAll()
                 .stream()

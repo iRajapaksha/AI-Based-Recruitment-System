@@ -1,7 +1,7 @@
-package com.recruitment_system.jobpost_service.config;
+package com.recruitment_system.auth_service.config;
 
 import com.recruitment_system.event.ApplicationSavedEvent;
-import com.recruitment_system.event.PostDeadlineEvent;
+import com.recruitment_system.event.SendVerificationEmailEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,14 +33,14 @@ public class KafkaProducerConfig {
         return props;
     }
 
-    // ProducerFactory for PostDeadlineEvent
+    // ProducerFactory for ApplicationSavedEvent
     @Bean
-    public ProducerFactory<String, PostDeadlineEvent> postDeadlineProducerFactory() {
+    public ProducerFactory<String, SendVerificationEmailEvent> sendVerificationEmailProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public KafkaTemplate<String, PostDeadlineEvent> postDeadlineKafkaTemplate() {
-        return new KafkaTemplate<>(postDeadlineProducerFactory());
+    public KafkaTemplate<String, SendVerificationEmailEvent> sendVerificationEmailKafkaTemplate() {
+        return new KafkaTemplate<>(sendVerificationEmailProducerFactory());
     }
 }

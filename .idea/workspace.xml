@@ -5,39 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ec0605b1-d08d-4de5-b86e-9644817c97ab" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/maven.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/maven.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/application-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/application-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/monitoring-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker/monitoring-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interview-service/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/interview-service/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/interview-service/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/interview-service/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/interview-service/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/interview-service/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/interview-service/src/main/java/com/recruitment_system/interview_service/InterviewServiceApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/interview-service/src/main/resources/application-docker.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/interview-service/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/interview-service/src/test/java/com/recruitment_system/interview_service/InterviewServiceApplicationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/jobpost-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/jobpost-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jobpost-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/jobpost-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/organization-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/organization-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/organization-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/organization-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prometheus.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/prometheus/prometheus.yml" beforeDir="false" afterPath="$PROJECT_DIR$/prometheus/prometheus.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/screening-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/screening-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/screening-service/src/main/java/com/recruitment_system/screening_service/service/AiScreeningClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/screening-service/src/main/java/com/recruitment_system/screening_service/service/AiScreeningClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/screening-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/screening-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared-module/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/shared-module/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/transcript-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/transcript-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/transcript-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/transcript-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/recruitment_system/user_service/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/recruitment_system/user_service/security/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application-service/src/main/java/com/recruitment_system/resume_service/dto/ApplicationDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/application-service/src/main/java/com/recruitment_system/resume_service/dto/ApplicationDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application-service/src/main/resources/application-docker.properties" beforeDir="false" afterPath="$PROJECT_DIR$/application-service/src/main/resources/application-docker.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobpost-service/src/main/java/com/recruitment_system/jobpost_service/config/KafkaConsumerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/jobpost-service/src/main/java/com/recruitment_system/jobpost_service/config/KafkaConsumerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/recruitment_system/notification_service/service/KafkaConsumerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/recruitment_system/notification_service/service/KafkaConsumerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/organization-service/src/main/java/com/recruitment_system/organization_service/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/organization-service/src/main/java/com/recruitment_system/organization_service/security/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transcript-service/src/main/java/com/recruitment_system/transcript_service/service/TranscriptService.java" beforeDir="false" afterPath="$PROJECT_DIR$/transcript-service/src/main/java/com/recruitment_system/transcript_service/service/TranscriptService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

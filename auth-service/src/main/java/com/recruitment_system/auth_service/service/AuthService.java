@@ -9,10 +9,8 @@ import com.recruitment_system.auth_service.repository.UserRepository;
 import com.recruitment_system.auth_service.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -30,9 +29,8 @@ public class AuthService {
         private final UserRepository userRepository;
         private final PasswordEncoder passwordEncoder;
         private final JwtUtil jwtUtil;
-        private final JavaMailSender javaMailSender;
         private final UserInterface userInterface;
-        private final KafkaTemplate<String,SendVerificationEmailEvent> kafkaTemplate;
+        private final EventProducer eventProducer;
 
 
 
@@ -52,8 +50,8 @@ public class AuthService {
                         .isVerified(false)
                         .build();
                 userRepository.save(user);
-                kafkaTemplate.send("notification", new SendVerificationEmailEvent(user.getEmail(), token));
-               // sendVerificationEmail(user.getEmail(),token);
+                log.info("User registered with email: " + user.getEmail());
+                eventProducer.sendVerificationEmailEvent(new SendVerificationEmailEvent(user.getEmail(), token));
                 userInterface.createProfile(user.getEmail());
 
                 return RegisterResponseDto.builder()

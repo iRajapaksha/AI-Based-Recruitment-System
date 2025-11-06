@@ -11,6 +11,7 @@ public class ApplicationDto {
 
     @NotNull(message = "Post ID is required")
     private Long postId;
-
+    @NotNull
+    @Size(min = 1, message = "At least one document must be provided")
     private List<DocumentDto> documentList;
 }
