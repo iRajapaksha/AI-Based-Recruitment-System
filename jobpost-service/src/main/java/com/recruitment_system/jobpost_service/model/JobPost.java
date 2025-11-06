@@ -33,6 +33,7 @@ public class JobPost {
     private String benefits;
     private LocalDateTime createdAt;
     private LocalDateTime deadline;
+    private int applicationsCount = 0;
     private Long orgId;
     private String createdBy;
     private String currency;

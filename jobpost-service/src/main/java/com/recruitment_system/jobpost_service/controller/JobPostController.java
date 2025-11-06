@@ -73,6 +73,13 @@ public class JobPostController {
         );
     }
 
+    @PutMapping("/{id}/increment-application")
+    public ResponseEntity<Void> incrementApplicationCount(@PathVariable Long id) {
+        jobPostService.incrementApplicationCount(id);
+        return ResponseEntity.ok().build();
+    }
+
+
     @PutMapping("/publish/{id}")
     public ResponseEntity<ApiResponse<JobPostResponseDto>> publishDraft(
             @PathVariable Long id,

@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JobPostDeadlineScheduler {
     private final JobPostRepository jobPostRepository;
-    private final JobPostDeadlineProducer jobPostDeadlineProducer;
+    private final EventProducer eventProducer;
 
 
     @Scheduled(fixedRate = 60000*60) // Check every minute
@@ -26,9 +26,9 @@ public class JobPostDeadlineScheduler {
         System.out.println("Expired job posts: " + expiredJobPostIds);
         for(Long jobPostId : expiredJobPostIds){
         PostDeadlineEvent event = new PostDeadlineEvent(jobPostId);
-        jobPostDeadlineProducer.sendDeadlineEvent(event);
-            JobPost jobPost = jobPostRepository.findById(jobPostId).orElseThrow();
-            jobPost.setIsActive(false); // mark as inactive
+        eventProducer.sendDeadlineEvent(event);
+        JobPost jobPost = jobPostRepository.findById(jobPostId).orElseThrow();
+        jobPost.setIsActive(false); // mark as inactive
             jobPostRepository.save(jobPost);
         }
     }

@@ -19,6 +19,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws  Exception{
         http.csrf(csrf-> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/actuator/prometheus", "/actuator/health").permitAll()
                         .requestMatchers(HttpMethod.GET,"/job-posts/get/**").permitAll()
                         .requestMatchers("/job-posts/**").authenticated()
                         .anyRequest().authenticated())

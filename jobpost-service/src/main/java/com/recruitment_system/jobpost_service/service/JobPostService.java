@@ -249,6 +249,7 @@ public class JobPostService {
                 .postId(post.getId())
                 .isActive(post.getIsActive())
                 .isDraft(post.getIsDraft())
+                .applicationsCount(post.getApplicationsCount())
                 .build();
     }
 
@@ -363,4 +364,13 @@ public class JobPostService {
                 .orElseThrow(()->new RuntimeException("No active job posts found for user: " + email));
         return posts.stream().map(this::mapToResponseDto).collect(Collectors.toList());
     }
+
+    @Transactional
+    public void incrementApplicationCount(Long jobPostId) {
+        JobPost jobPost = jobPostRepository.findById(jobPostId)
+                .orElseThrow(() -> new RuntimeException("JobPost not found"));
+        jobPost.setApplicationsCount(jobPost.getApplicationsCount() + 1);
+        jobPostRepository.save(jobPost);
+    }
+
 }

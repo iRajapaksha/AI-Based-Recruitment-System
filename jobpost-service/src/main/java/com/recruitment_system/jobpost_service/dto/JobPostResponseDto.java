@@ -30,6 +30,7 @@ public class JobPostResponseDto {
     private Long orgId;
     private String createdBy;
     private String currency;
+    private int applicationsCount;
 
 
 }

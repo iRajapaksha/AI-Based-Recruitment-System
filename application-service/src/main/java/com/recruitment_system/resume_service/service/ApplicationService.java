@@ -1,5 +1,6 @@
 package com.recruitment_system.resume_service.service;
 
+import com.recruitment_system.event.ApplicationSavedEvent;
 import com.recruitment_system.resume_service.dto.ApplicationDto;
 import com.recruitment_system.resume_service.dto.ApplicationResponseDto;
 import com.recruitment_system.resume_service.dto.DocumentDto;
@@ -11,18 +12,22 @@ import com.recruitment_system.resume_service.repository.ApplicationDocumentRepos
 import com.recruitment_system.resume_service.repository.ApplicationRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final ApplicationDocumentRepository applicationDocumentRepository;
+    private final EventProducer eventProducer;
     private final UserInterface userInterface;
+
     public ApplicationResponseDto saveApplication(ApplicationDto dto){
         UserProfileDto user = userInterface.getMyProfile().getBody().getData();
         Application application = Application.builder()
@@ -48,6 +53,8 @@ public class ApplicationService {
             );
         }
         applicationRepository.save(application);
+        log.info("Application saved for  postId: " + application.getPostId());
+        eventProducer.sendApplicationSavedEvent(new ApplicationSavedEvent(application.getPostId()));
         return mapToDto(application);
     }
 
