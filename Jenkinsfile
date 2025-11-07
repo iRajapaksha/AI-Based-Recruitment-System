@@ -21,6 +21,17 @@ pipeline {
             }
         }
         
+        stage('Build Shared Module') {
+            steps {
+                echo 'Building shared-module...'
+                dir('shared-module') {
+                    sh """
+                        mvn clean install -DskipTests
+                    """
+                }
+            }
+        }
+        
         stage('Build Services') {
             steps {
                 script {
@@ -32,7 +43,10 @@ pipeline {
                         'organization-service',
                         'jobpost-service',
                         'screening-service',
-                        'notification-service'
+                        'notification-service',
+                        'application-service',
+                        'interview-service',
+                        'transcript-service'
                     ]
                     
                     services.each { service ->
@@ -66,8 +80,8 @@ pipeline {
                         cd /opt/recruitment-system
                         
                         # Export environment variables
-                        export GOOGLE_CLIENT_ID="\${GOOGLE_CLIENT_ID}"
-                        export GOOGLE_CLIENT_SECRET="\${GOOGLE_CLIENT_SECRET}"
+                        export GOOGLE_CLIENT_ID="${GOOGLE_CLIENT_ID}"
+                        export GOOGLE_CLIENT_SECRET="${GOOGLE_CLIENT_SECRET}"
                         
                         # Pull latest images
                         sudo docker-compose pull
@@ -78,6 +92,9 @@ pipeline {
                         
                         # Show status
                         sudo docker-compose ps
+                        
+                        # Show logs for verification
+                        sudo docker-compose logs --tail=50
 ENDSSH
                     """
                 }
@@ -88,25 +105,9 @@ ENDSSH
     post {
         success {
             echo 'Pipeline completed successfully!'
-            emailext (
-                subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                body: """
-                    <p>SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'</p>
-                    <p>Check console output at <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a></p>
-                """,
-                to: 'kavindaaludeniya@gmail.com'
-            )
         }
         failure {
-            echo 'Pipeline failed!'
-            emailext (
-                subject: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                body: """
-                    <p>FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'</p>
-                    <p>Check console output at <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a></p>
-                """,
-                to: 'kavindaaludeniya@gmail.com'
-            )
+            echo 'Pipeline failed! Check console output for details.'
         }
         always {
             echo 'Cleaning up workspace...'
