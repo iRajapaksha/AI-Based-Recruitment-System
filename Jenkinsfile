@@ -69,10 +69,6 @@ pipeline {
         }
         
         stage('Deploy to VPS') {
-            when {
-                branch 'main'
-                branch 'origin/main'
-            }
             steps {
                 echo 'Deploying to VPS...'
                 sshagent(['vps-ssh-key']) {
