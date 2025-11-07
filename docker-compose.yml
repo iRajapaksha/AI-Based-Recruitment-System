@@ -77,7 +77,7 @@ services:
       - notification-service
       - organization-service
       - screening-service
-      - resume-service
+      # - resume-service
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
@@ -222,25 +222,25 @@ services:
     networks:
         - backend
 
-  resume-service:
-    image: kavindaagkr/resume-service:latest
-    container_name: resume-service
-    restart: unless-stopped
-    ports:
-      - "8100:8100"
-    depends_on:
-      - mysql-db
-      - service-registry
-      - kafka
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/recruitmentsystem
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
-    networks:
-        - backend
+  # resume-service:
+  #   image: kavindaagkr/resume-service:latest
+  #   container_name: resume-service
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8100:8100"
+  #   depends_on:
+  #     - mysql-db
+  #     - service-registry
+  #     - kafka
+  #   environment:
+  #     - SPRING_PROFILES_ACTIVE=docker
+  #     - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/recruitmentsystem
+  #     - SPRING_DATASOURCE_USERNAME=root
+  #     - SPRING_DATASOURCE_PASSWORD=root
+  #     - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+  #     - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+  #   networks:
+  #       - backend
 
   api-gateway:
     image: kavindaagkr/api-gateway:latest
@@ -255,7 +255,6 @@ services:
       - jobpost-service
       - organization-service
       - screening-service
-      - resume-service
       - notification-service
     environment:
       - SPRING_PROFILES_ACTIVE=docker
