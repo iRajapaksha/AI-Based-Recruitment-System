@@ -45,8 +45,8 @@ pipeline {
                         'screening-service',
                         'notification-service',
                         'application-service',
-                        'interview-service',
-                        'transcript-service'
+                        // 'interview-service',
+                        // 'transcript-service'
                     ]
                     
                     services.each { service ->
