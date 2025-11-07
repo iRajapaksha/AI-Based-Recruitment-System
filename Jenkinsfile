@@ -62,7 +62,7 @@ pipeline {
                 echo 'Deploying to VPS...'
                 sshagent(['vps-ssh-key']) {
                     bat """
-                        ssh -o StrictHostKeyChecking=no username@your-vps-ip "cd /opt/recruitment-system && docker-compose pull && docker-compose down && docker-compose up -d"
+                        ssh -o StrictHostKeyChecking=no ubuntu@15.235.210.227 "cd /opt/recruitment-system && docker-compose pull && docker-compose down && docker-compose up -d"
                     """
                 }
             }
