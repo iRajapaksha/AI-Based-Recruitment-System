@@ -11,6 +11,7 @@ pipeline {
         GOOGLE_CLIENT_ID = credentials('google-oauth-client-id')
         GOOGLE_CLIENT_SECRET = credentials('google-oauth-client-secret')
         DOCKERHUB_USERNAME = 'kavindaagkr'
+        VPS_IP = '15.235.210.227'
     }
     
     stages {
@@ -76,7 +77,7 @@ pipeline {
                 echo 'Deploying to VPS...'
                 sshagent(['vps-ssh-key']) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@YOUR_VPS_IP << 'ENDSSH'
+                        ssh -o StrictHostKeyChecking=no ubuntu@${VPS_IP} << 'ENDSSH'
                         cd /opt/recruitment-system
                         
                         # Export environment variables
