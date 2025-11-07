@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 services:
 
   redis:
@@ -98,7 +98,7 @@ services:
 
   # Microservices
   service-registry:
-    image: irajapaksha/service-registry:latest
+    image: kavindaagkr/service-registry:latest
     container_name: service-registry
     restart: unless-stopped
     ports:
@@ -109,7 +109,7 @@ services:
       - backend
 
   auth-service:
-    image: irajapaksha/auth-service:v1
+    image: kavindaagkr/auth-service:latest
     container_name: auth-service
     restart: unless-stopped
     ports:
@@ -125,11 +125,13 @@ services:
         - SPRING_DATASOURCE_PASSWORD=root
         - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
         - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+        - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+        - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
     networks:
         - backend
 
   user-service:
-    image: irajapaksha/user-service:v1
+    image: kavindaagkr/user-service:latest
     container_name: user-service
     restart: unless-stopped
     ports:
@@ -147,7 +149,7 @@ services:
         - backend
 
   notification-service:
-    image: irajapaksha/notification-service:v1
+    image: kavindaagkr/notification-service:latest
     container_name: notification-service
     restart: unless-stopped
     ports:
@@ -163,7 +165,7 @@ services:
         - backend
 
   organization-service:
-    image: irajapaksha/organization-service:v1
+    image: kavindaagkr/organization-service:latest
     container_name: organization-service
     restart: unless-stopped
     ports:
@@ -181,7 +183,7 @@ services:
         - backend
 
   jobpost-service:
-    image: irajapaksha/jobpost-service:v1
+    image: kavindaagkr/jobpost-service:latest
     container_name: jobpost-service
     restart: unless-stopped
     ports:
@@ -201,7 +203,7 @@ services:
         - backend
 
   screening-service:
-    image: irajapaksha/screening-service:v1
+    image: kavindaagkr/screening-service:latest
     container_name: screening-service
     restart: unless-stopped
     ports:
@@ -221,7 +223,7 @@ services:
         - backend
 
   resume-service:
-    image: irajapaksha/resume-service:v1
+    image: kavindaagkr/resume-service:latest
     container_name: resume-service
     restart: unless-stopped
     ports:
@@ -241,7 +243,7 @@ services:
         - backend
 
   api-gateway:
-    image: irajapaksha/api-gateway:latest
+    image: kavindaagkr/api-gateway:latest
     container_name: api-gateway
     restart: unless-stopped
     ports:
