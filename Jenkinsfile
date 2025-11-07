@@ -71,30 +71,21 @@ pipeline {
         stage('Deploy to VPS') {
             steps {
                 echo 'Deploying to VPS...'
-                sshagent(['vps-ssh-key']) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@15.235.210.227 << 'ENDSSH'
-                        cd /opt/recruitment-system
-                        
-                        # Export environment variables
-                        export GOOGLE_CLIENT_ID="${GOOGLE_CLIENT_ID}"
-                        export GOOGLE_CLIENT_SECRET="${GOOGLE_CLIENT_SECRET}"
-                        
-                        # Pull latest images
-                        sudo docker-compose pull
-                        
-                        # Restart services
-                        sudo docker-compose down
-                        sudo docker-compose up -d
-                        
-                        # Show status
-                        sudo docker-compose ps
-                        
-                        # Show logs for verification
-                        sudo docker-compose logs --tail=50
-ENDSSH
-                    """
-                }
+                sshagent(['vps-ssh']) {
+    sh """
+        ssh -o StrictHostKeyChecking=no ubuntu@15.235.210.227 '
+            cd /opt/recruitment-system &&
+            export GOOGLE_CLIENT_ID="${GOOGLE_CLIENT_ID}" &&
+            export GOOGLE_CLIENT_SECRET="${GOOGLE_CLIENT_SECRET}" &&
+            sudo docker-compose pull &&
+            sudo docker-compose down &&
+            sudo docker-compose up -d &&
+            sudo docker-compose ps &&
+            sudo docker-compose logs --tail=50
+        '
+    """
+}
+
             }
         }
     }
