@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 services:
 
   redis:
@@ -58,47 +58,47 @@ services:
       - backend
 
  # Prometheus Configuration
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    restart: unless-stopped
-    ports:
-        - "9090:9090"
-    volumes:
-        - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - backend
-    depends_on:
-      - api-gateway
-      - service-registry
-      - user-service
-      - auth-service
-      - jobpost-service
-      - notification-service
-      - organization-service
-      - screening-service
-      - resume-service
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    restart: unless-stopped
-    ports:
-        - "3000:3000"
-    links:
-      - prometheus:prometheus
-    volumes:
-      - grafana-storage:/var/lib/grafana
-    environment:
-          GF_SECURITY_ADMIN_USER: admin
-          GF_SECURITY_ADMIN_PASSWORD: admin
-    depends_on:
-        - prometheus
-    networks:
-      - backend
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: prometheus
+  #   restart: unless-stopped
+  #   ports:
+  #       - "9090:9090"
+  #   volumes:
+  #       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  #   networks:
+  #     - backend
+  #   depends_on:
+  #     - api-gateway
+  #     - service-registry
+  #     - user-service
+  #     - auth-service
+  #     - jobpost-service
+  #     - notification-service
+  #     - organization-service
+  #     - screening-service
+      # - resume-service
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: grafana
+  #   restart: unless-stopped
+  #   ports:
+  #       - "3000:3000"
+  #   links:
+  #     - prometheus:prometheus
+  #   volumes:
+  #     - grafana-storage:/var/lib/grafana
+  #   environment:
+  #         GF_SECURITY_ADMIN_USER: admin
+  #         GF_SECURITY_ADMIN_PASSWORD: admin
+  #   depends_on:
+  #       - prometheus
+  #   networks:
+  #     - backend
 
   # Microservices
   service-registry:
-    image: irajapaksha/service-registry:latest
+    image: kavindaagkr/service-registry:latest
     container_name: service-registry
     restart: unless-stopped
     ports:
@@ -109,7 +109,7 @@ services:
       - backend
 
   auth-service:
-    image: irajapaksha/auth-service:v1
+    image: kavindaagkr/auth-service:latest
     container_name: auth-service
     restart: unless-stopped
     ports:
@@ -125,11 +125,13 @@ services:
         - SPRING_DATASOURCE_PASSWORD=root
         - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
         - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+        - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+        - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
     networks:
         - backend
 
   user-service:
-    image: irajapaksha/user-service:v1
+    image: kavindaagkr/user-service:latest
     container_name: user-service
     restart: unless-stopped
     ports:
@@ -147,7 +149,7 @@ services:
         - backend
 
   notification-service:
-    image: irajapaksha/notification-service:v1
+    image: kavindaagkr/notification-service:latest
     container_name: notification-service
     restart: unless-stopped
     ports:
@@ -163,7 +165,7 @@ services:
         - backend
 
   organization-service:
-    image: irajapaksha/organization-service:v1
+    image: kavindaagkr/organization-service:latest
     container_name: organization-service
     restart: unless-stopped
     ports:
@@ -181,7 +183,7 @@ services:
         - backend
 
   jobpost-service:
-    image: irajapaksha/jobpost-service:v1
+    image: kavindaagkr/jobpost-service:latest
     container_name: jobpost-service
     restart: unless-stopped
     ports:
@@ -201,7 +203,7 @@ services:
         - backend
 
   screening-service:
-    image: irajapaksha/screening-service:v1
+    image: kavindaagkr/screening-service:latest
     container_name: screening-service
     restart: unless-stopped
     ports:
@@ -220,28 +222,28 @@ services:
     networks:
         - backend
 
-  resume-service:
-    image: irajapaksha/resume-service:v1
-    container_name: resume-service
-    restart: unless-stopped
-    ports:
-      - "8100:8100"
-    depends_on:
-      - mysql-db
-      - service-registry
-      - kafka
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/recruitmentsystem
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
-    networks:
-        - backend
+  # resume-service:
+  #   image: kavindaagkr/resume-service:latest
+  #   container_name: resume-service
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8100:8100"
+  #   depends_on:
+  #     - mysql-db
+  #     - service-registry
+  #     - kafka
+  #   environment:
+  #     - SPRING_PROFILES_ACTIVE=docker
+  #     - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/recruitmentsystem
+  #     - SPRING_DATASOURCE_USERNAME=root
+  #     - SPRING_DATASOURCE_PASSWORD=root
+  #     - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+  #     - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+  #   networks:
+  #       - backend
 
   api-gateway:
-    image: irajapaksha/api-gateway:latest
+    image: kavindaagkr/api-gateway:latest
     container_name: api-gateway
     restart: unless-stopped
     ports:
@@ -253,7 +255,6 @@ services:
       - jobpost-service
       - organization-service
       - screening-service
-      - resume-service
       - notification-service
     environment:
       - SPRING_PROFILES_ACTIVE=docker
