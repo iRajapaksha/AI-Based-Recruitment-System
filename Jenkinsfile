@@ -57,9 +57,7 @@ pipeline {
                                     mvn clean compile jib:build \
                                     -Djib.to.auth.username=\${DOCKER_HUB_CREDENTIALS_USR} \
                                     -Djib.to.auth.password=\${DOCKER_HUB_CREDENTIALS_PSW} \
-                                    -Djib.to.image=${DOCKERHUB_USERNAME}/${service}:latest \
-                                    -DGOOGLE_CLIENT_ID=\${GOOGLE_CLIENT_ID} \
-                                    -DGOOGLE_CLIENT_SECRET=\${GOOGLE_CLIENT_SECRET}
+                                    -Djib.to.image=${DOCKERHUB_USERNAME}/${service}:latest
                                 """
                             }
                         }
@@ -83,27 +81,47 @@ pipeline {
         stage('Deploy to VPS') {
             steps {
                 echo 'Deploying to VPS...'
-                sshagent(['vps-ssh']) {
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_IP} bash -s << 'ENDSSH'
+                script {
+                    // Create .env content with actual values
+                    def envFileContent = """GOOGLE_CLIENT_ID=${env.GOOGLE_CLIENT_ID}
+GOOGLE_CLIENT_SECRET=${env.GOOGLE_CLIENT_SECRET}
+MAIL_USERNAME=nayanajith.ishara2541@gmail.com
+MAIL_PASSWORD=ojwnzgvijvrslnod
+DB_PASSWORD=root
+"""
+                    
+                    // Write .env file locally
+                    writeFile file: '.env.tmp', text: envFileContent
+                    
+                    sshagent(['vps-ssh']) {
+                        // Copy .env file to VPS
+                        sh """
+                            scp -o StrictHostKeyChecking=no .env.tmp ${VPS_USER}@${VPS_IP}:/tmp/.env
+                        """
+                        
+                        // Deploy on VPS
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_IP} bash << 'ENDSSH'
 set -e
 
 echo "=== Stopping existing containers ==="
 cd /opt/recruitment-system 2>/dev/null && sudo docker-compose down || echo "No existing containers to stop"
 
 echo "=== Cleaning up old containers ==="
-sudo docker rm -f $(sudo docker ps -aq) 2>/dev/null || echo "No containers to remove"
+sudo docker rm -f \$(sudo docker ps -aq) 2>/dev/null || echo "No containers to remove"
 
 echo "=== Setting up deployment directory ==="
 sudo mkdir -p /opt/recruitment-system/prometheus
 sudo mv /tmp/docker-compose.yml /opt/recruitment-system/
 sudo mv /tmp/prometheus.yml /opt/recruitment-system/prometheus/
 
-echo "=== Creating .env file ==="
-sudo tee /opt/recruitment-system/.env > /dev/null << EOF
-GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-EOF
+echo "=== Moving .env file ==="
+sudo mv /tmp/.env /opt/recruitment-system/.env
+sudo chmod 600 /opt/recruitment-system/.env
+
+echo "=== Verifying .env file ==="
+echo "Checking .env file contents (first 2 lines only for security):"
+sudo head -n 2 /opt/recruitment-system/.env
 
 echo "=== Changing to deployment directory ==="
 cd /opt/recruitment-system
@@ -115,17 +133,24 @@ echo "=== Starting services ==="
 sudo docker-compose up -d
 
 echo "=== Waiting for services ==="
-sleep 20
+sleep 30
 
 echo "=== Service Status ==="
 sudo docker-compose ps
 
-echo "=== Recent Logs ==="
-sudo docker-compose logs --tail=30
+echo "=== Checking auth-service environment ==="
+sudo docker-compose exec -T auth-service env | grep -E "GOOGLE|MAIL|DB_PASSWORD" || echo "Environment variables not found"
+
+echo "=== Recent auth-service Logs ==="
+sudo docker-compose logs --tail=50 auth-service
 
 echo "=== Deployment Complete ==="
 ENDSSH
-                    '''
+                        """
+                    }
+                    
+                    // Clean up local temp file
+                    sh 'rm -f .env.tmp'
                 }
             }
         }
@@ -133,11 +158,11 @@ ENDSSH
     
     post {
         success {
-            echo 'Pipeline completed successfully!'
-            echo "Services deployed to ${VPS_IP}"
+            echo '✅ Pipeline completed successfully!'
+            echo "🚀 Services deployed to ${VPS_IP}"
         }
         failure {
-            echo 'Pipeline failed! Check console output for details.'
+            echo '❌ Pipeline failed! Check console output for details.'
         }
         always {
             echo 'Cleaning up workspace...'
