@@ -133,11 +133,11 @@ ENDSSH
     
     post {
         success {
-            echo '✅ Pipeline completed successfully!'
-            echo "🚀 Services deployed to ${VPS_IP}"
+            echo 'Pipeline completed successfully!'
+            echo "Services deployed to ${VPS_IP}"
         }
         failure {
-            echo '❌ Pipeline failed! Check console output for details.'
+            echo 'Pipeline failed! Check console output for details.'
         }
         always {
             echo 'Cleaning up workspace...'
