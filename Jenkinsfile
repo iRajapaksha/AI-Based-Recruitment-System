@@ -107,9 +107,6 @@ set -e
 echo "=== Stopping existing containers ==="
 cd /opt/recruitment-system 2>/dev/null && sudo docker-compose down || echo "No existing containers to stop"
 
-echo "=== Cleaning up old containers ==="
-sudo docker rm -f \$(sudo docker ps -aq) 2>/dev/null || echo "No containers to remove"
-
 echo "=== Setting up deployment directory ==="
 sudo mkdir -p /opt/recruitment-system/prometheus
 sudo mv /tmp/docker-compose.yml /opt/recruitment-system/
@@ -149,7 +146,6 @@ ENDSSH
                         """
                     }
                     
-                    // Clean up local temp file
                     sh 'rm -f .env.tmp'
                 }
             }
@@ -158,11 +154,11 @@ ENDSSH
     
     post {
         success {
-            echo '✅ Pipeline completed successfully!'
-            echo "🚀 Services deployed to ${VPS_IP}"
+            echo 'Pipeline completed successfully!'
+            echo "Services deployed to ${VPS_IP}"
         }
         failure {
-            echo '❌ Pipeline failed! Check console output for details.'
+            echo 'Pipeline failed! Check console output for details.'
         }
         always {
             echo 'Cleaning up workspace...'
