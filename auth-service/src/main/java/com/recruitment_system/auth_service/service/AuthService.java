@@ -7,6 +7,7 @@ import com.recruitment_system.auth_service.model.Role;
 import com.recruitment_system.auth_service.model.UserEntity;
 import com.recruitment_system.auth_service.repository.UserRepository;
 import com.recruitment_system.auth_service.security.JwtUtil;
+import com.recruitment_system.event.CreateUserProfileEvent;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +53,7 @@ public class AuthService {
                 userRepository.save(user);
                 log.info("User registered with email: " + user.getEmail());
                 eventProducer.sendVerificationEmailEvent(new SendVerificationEmailEvent(user.getEmail(), token));
-                userInterface.createProfile(user.getEmail());
+                eventProducer.createUserProfileEvent(new CreateUserProfileEvent(user.getEmail()));
 
                 return RegisterResponseDto.builder()
                         .email(user.getEmail())

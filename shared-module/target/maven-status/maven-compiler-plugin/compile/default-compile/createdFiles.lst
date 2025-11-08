@@ -4,7 +4,11 @@ com\recruitment_system\Main.class
 com\recruitment_system\dto\ApiResponse$ApiResponseBuilder.class
 com\recruitment_system\event\PostDeadlineEvent.class
 com\recruitment_system\dto\JobPostResponseDto.class
+com\recruitment_system\event\CreateUserProfileEvent$CreateUserProfileEventBuilder.class
 com\recruitment_system\model\Skill$SkillBuilder.class
+com\recruitment_system\event\UpdateInterviewDateEvent$UpdateInterviewDateEventBuilder.class
+com\recruitment_system\event\CreateUserProfileEvent.class
+com\recruitment_system\event\UpdateInterviewDateEvent.class
 com\recruitment_system\event\SaveScreeningResultEvent$SaveScreeningResultEventBuilder.class
 com\recruitment_system\event\ConfirmationEmailEvent$ConfirmationEmailEventBuilder.class
 com\recruitment_system\model\Skill.class

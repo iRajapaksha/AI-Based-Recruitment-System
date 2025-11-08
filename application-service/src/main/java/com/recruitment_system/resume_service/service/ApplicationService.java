@@ -42,6 +42,7 @@ public class ApplicationService {
                 .applicationStatus(ApplicationStatus.PENDING)
                 .screeningScore(null)
                 .interviewScore(null)
+                .interviewDate(null)
                 .build();
         if (dto.getDocumentList() != null) {
             application.setDocumentList(
@@ -68,6 +69,15 @@ public class ApplicationService {
                 .map(this::mapToDto)
                 .toList();
         return dtos;
+    }
+
+    public List<ApplicationResponseDto> getAllInterviews(String email){
+        List<Application> applications =
+                applicationRepository.findByUserEmailAndApplicationStatus(
+                        email, ApplicationStatus.INTERVIEW_SCHEDULED);
+        return applications.stream()
+                .map(this::mapToDto)
+                .toList();
     }
 
     public ApplicationResponseDto getById(Long id){
@@ -108,6 +118,7 @@ public class ApplicationService {
                 .applicationStatus(application.getApplicationStatus())
                 .screeningScore(application.getScreeningScore())
                 .interviewScore(application.getInterviewScore())
+                .interviewDate(application.getInterviewDate())
                 .documentList(application.getDocumentList().stream()
                         .map(doc -> DocumentDto.builder()
                                 .id(doc.getDocumentId())

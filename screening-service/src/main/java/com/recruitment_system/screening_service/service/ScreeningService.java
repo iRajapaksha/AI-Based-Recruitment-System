@@ -2,9 +2,10 @@ package com.recruitment_system.screening_service.service;
 
 import com.recruitment_system.dto.JobPostResponseDto;
 import com.recruitment_system.event.ConfirmationEmailEvent;
-import com.recruitment_system.event.PostDeadlineEvent;
 import com.recruitment_system.event.SaveScreeningResultEvent;
+import com.recruitment_system.event.UpdateInterviewDateEvent;
 import com.recruitment_system.screening_service.dto.ApplicationResponseDto;
+import com.recruitment_system.screening_service.dto.ConfirmApplicantsDto;
 import com.recruitment_system.screening_service.dto.EmailContent;
 import com.recruitment_system.screening_service.dto.ScreeningResultDto;
 import com.recruitment_system.screening_service.feign.JobPostInterface;
@@ -17,7 +18,6 @@ import com.recruitment_system.screening_service.repository.ScreeningResultReposi
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -99,9 +99,13 @@ public class ScreeningService {
         return dtoResults;
     }
     @Transactional
-    public void confirmApplicants(Long jobPostId, List<String> selectedApplicationEmails) {
+    public void confirmApplicants(Long jobPostId, ConfirmApplicantsDto confirmApplicantsDto) {
         JobPostResponseDto jobPost =
                 jobPostInterface.getJobPostById(jobPostId).getBody().getData();
+        List<String> selectedApplicationEmails = confirmApplicantsDto.getSelectedApplicationEmails();
+        LocalDateTime interviewDate = confirmApplicantsDto.getInterviewDate();
+        log.info("Confirming applicants for job post ID: " + jobPostId +
+                " with interview date: " + interviewDate);
 
         List<ApplicationResponseDto> applications =
                 applicationInterface.getAllByPostId(jobPostId).getBody().getData()
@@ -111,7 +115,7 @@ public class ScreeningService {
 
         // ask AI to generate personalized subject & body for each applicant
         Map<String, EmailContent> emailContents =
-                aiScreeningClient.generateConfirmationEmails(jobPost, applications);
+                aiScreeningClient.generateConfirmationEmails(jobPost, applications, interviewDate);
 
         for (ApplicationResponseDto app : applications) {
             EmailContent content = emailContents.get(app.getUserEmail());
@@ -139,6 +143,10 @@ public class ScreeningService {
                     content.getBody()
             );
             eventProducer.sendConfirmationEmailEvent(event);
+            eventProducer.updateInterviewDateEvent(new UpdateInterviewDateEvent(
+                    app.getApplicationId(),
+                    interviewDate
+                    ));
         }
 
     }

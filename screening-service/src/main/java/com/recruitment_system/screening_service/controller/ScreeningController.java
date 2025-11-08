@@ -1,14 +1,18 @@
 package com.recruitment_system.screening_service.controller;
 
 import com.recruitment_system.dto.ApiResponse;
+import com.recruitment_system.screening_service.dto.ConfirmApplicantsDto;
 import com.recruitment_system.screening_service.dto.ScreeningResultDto;
 import com.recruitment_system.screening_service.service.ScreeningService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/screening")
@@ -42,8 +46,9 @@ public class ScreeningController {
     @PostMapping("/job-post/{jobPostId}/confirm")
     public ResponseEntity<ApiResponse<Void>> confirmApplicants(
             @PathVariable Long jobPostId,
-            @RequestBody List<String> selectedApplicationEmails) {
-        screeningService.confirmApplicants(jobPostId,selectedApplicationEmails);
+            @Valid @RequestBody ConfirmApplicantsDto confirmApplicantsDto) {
+        log.info("Received confirm request: {}", confirmApplicantsDto);
+        screeningService.confirmApplicants(jobPostId,confirmApplicantsDto);
         return ResponseEntity.ok(new ApiResponse<>(true,
                 "Applicants confirmation email sent successfully",
                 null));

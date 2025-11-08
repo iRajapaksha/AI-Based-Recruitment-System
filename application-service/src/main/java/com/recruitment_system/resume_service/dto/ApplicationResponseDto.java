@@ -23,4 +23,5 @@ public class ApplicationResponseDto {
     private ApplicationStatus applicationStatus;
     private Double screeningScore;
     private Double interviewScore;
+    private LocalDateTime interviewDate;
 }

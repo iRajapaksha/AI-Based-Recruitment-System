@@ -2,6 +2,7 @@ package com.recruitment_system.screening_service.service;
 
 import com.recruitment_system.event.ConfirmationEmailEvent;
 import com.recruitment_system.event.SaveScreeningResultEvent;
+import com.recruitment_system.event.UpdateInterviewDateEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class EventProducer {
     private final KafkaTemplate<String, ConfirmationEmailEvent> confirmationEmailKafkaTemplate;
     private final KafkaTemplate<String, SaveScreeningResultEvent> saveScreeningResultKafkaTemplate;
+    private final KafkaTemplate<String, UpdateInterviewDateEvent> updateInterviewDateKafkaTemplate;
 
     public void sendConfirmationEmailEvent(ConfirmationEmailEvent event) {
         confirmationEmailKafkaTemplate.send("confirmation-email", event);
@@ -21,5 +23,10 @@ public class EventProducer {
     public void sendSaveScreeningResultEvent(SaveScreeningResultEvent event) {
         saveScreeningResultKafkaTemplate.send("save-screening-result", event);
         log.info("Published save screening result event for candidate: " + event.getEmail());
+    }
+
+    public void updateInterviewDateEvent(UpdateInterviewDateEvent event) {
+        updateInterviewDateKafkaTemplate.send("update-interview-date", event);
+        log.info("Published update interview date event for applicationId: " + event.getApplicationId());
     }
 }

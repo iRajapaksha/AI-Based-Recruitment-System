@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class EventProducer {
-    private final KafkaTemplate<String, ApplicationSavedEvent> applcationSavedKafkaTemplate;
+    private final KafkaTemplate<String, ApplicationSavedEvent> applicationSavedKafkaTemplate;
 
     public void sendApplicationSavedEvent(ApplicationSavedEvent event) {
-        applcationSavedKafkaTemplate.send("application-saved-event", event);
+        applicationSavedKafkaTemplate.send("application-saved-event", event);
         log.info("Published application saved event for postId: " + event.getPostId());
     }
 

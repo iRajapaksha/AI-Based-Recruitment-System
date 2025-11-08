@@ -33,14 +33,23 @@ public class KafkaProducerConfig {
         return props;
     }
 
-    // ProducerFactory for ApplicationSavedEvent
-    @Bean
-    public ProducerFactory<String, ApplicationSavedEvent> applicationSavedProducerFactory() {
+
+     // Generic ProducerFactory builder for any event type.
+
+    private <T> ProducerFactory<String, T> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
+
+     // Generic KafkaTemplate builder for any event type.
+
+    private <T> KafkaTemplate<String, T> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
+    }
+
+    // ProducerFactory for ApplicationSavedEvent
     @Bean
-    public KafkaTemplate<String, ApplicationSavedEvent> applcationSavedKafkaTemplate() {
-        return new KafkaTemplate<>(applicationSavedProducerFactory());
+    public KafkaTemplate<String, ApplicationSavedEvent> applicationSavedKafkaTemplate() {
+        return kafkaTemplate();
     }
 }

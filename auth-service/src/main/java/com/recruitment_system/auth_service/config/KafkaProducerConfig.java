@@ -1,6 +1,7 @@
 package com.recruitment_system.auth_service.config;
 
 import com.recruitment_system.event.ApplicationSavedEvent;
+import com.recruitment_system.event.CreateUserProfileEvent;
 import com.recruitment_system.event.SendVerificationEmailEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -33,14 +34,23 @@ public class KafkaProducerConfig {
         return props;
     }
 
-    // ProducerFactory for ApplicationSavedEvent
+    // ProducerFactory for SendVerificationEvent
     @Bean
     public ProducerFactory<String, SendVerificationEmailEvent> sendVerificationEmailProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
-
     @Bean
     public KafkaTemplate<String, SendVerificationEmailEvent> sendVerificationEmailKafkaTemplate() {
         return new KafkaTemplate<>(sendVerificationEmailProducerFactory());
+    }
+
+    // ProducerFactory for CreateUserProfileEvent
+    @Bean
+    public ProducerFactory<String, CreateUserProfileEvent> createUserProfileProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfigs());
+    }
+    @Bean
+    public KafkaTemplate<String, CreateUserProfileEvent> createUserProfileKafkaTemplate() {
+        return new KafkaTemplate<>(createUserProfileProducerFactory());
     }
 }

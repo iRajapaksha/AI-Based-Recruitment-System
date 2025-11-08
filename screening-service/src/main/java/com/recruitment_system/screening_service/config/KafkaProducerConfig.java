@@ -3,6 +3,7 @@ package com.recruitment_system.screening_service.config;
 
 import com.recruitment_system.event.ConfirmationEmailEvent;
 import com.recruitment_system.event.SaveScreeningResultEvent;
+import com.recruitment_system.event.UpdateInterviewDateEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -45,6 +46,7 @@ public class KafkaProducerConfig {
         return new KafkaTemplate<>(confirmationEmailProducerFactory());
     }
 
+
     // ProducerFactory for SaveScreeningResultEvent
     @Bean
     public ProducerFactory<String, SaveScreeningResultEvent> saveScreeningResultProducerFactory() {
@@ -53,5 +55,15 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<String, SaveScreeningResultEvent> saveScreeningResultKafkaTemplate() {
         return new KafkaTemplate<>(saveScreeningResultProducerFactory());
+    }
+
+    // ProducerFactory for UpdateInterviewDateEvent
+    @Bean
+    public ProducerFactory<String, UpdateInterviewDateEvent> updateInterviewDateProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfigs());
+    }
+    @Bean
+    public KafkaTemplate<String, UpdateInterviewDateEvent> updateInterviewDateKafkaTemplate() {
+        return new KafkaTemplate<>(updateInterviewDateProducerFactory());
     }
 }

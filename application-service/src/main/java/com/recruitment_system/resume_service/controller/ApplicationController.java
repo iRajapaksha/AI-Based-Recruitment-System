@@ -7,6 +7,7 @@ import com.recruitment_system.resume_service.service.ApplicationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,6 +50,16 @@ public class ApplicationController {
         return ResponseEntity.ok(
                 new ApiResponse<>(true,"Get resume by id.",
                         applicationService.getById(id))
+        );
+
+    }
+
+    @GetMapping("/interviews")
+    public ResponseEntity<ApiResponse<List<ApplicationResponseDto>>> getAllInterviews(Authentication auth){
+        String email = auth.getName();
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,"Get all applications with interviews.",
+                        applicationService.getAllInterviews(email))
         );
 
     }

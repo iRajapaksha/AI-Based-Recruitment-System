@@ -27,4 +27,5 @@ public class Application {
     private ApplicationStatus applicationStatus;
     private Double screeningScore;
     private Double interviewScore;
+    private LocalDateTime interviewDate;
 }

@@ -2,12 +2,14 @@ package com.recruitment_system.screening_service.service;
 
 import com.recruitment_system.dto.JobPostResponseDto;
 import com.recruitment_system.screening_service.dto.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class  AiScreeningClient {
     private final RestTemplate restTemplate = new RestTemplate();
@@ -111,7 +114,9 @@ public class  AiScreeningClient {
 
 
     public Map<String, EmailContent> generateConfirmationEmails(
-            JobPostResponseDto jobPost, List<ApplicationResponseDto> apps) {
+            JobPostResponseDto jobPost,
+            List<ApplicationResponseDto> apps,
+            LocalDateTime interviewDate) {
 
         Map<String, Object> payload = new HashMap<>();
         payload.put("jobId", jobPost.getPostId().toString());
@@ -125,6 +130,12 @@ public class  AiScreeningClient {
                 .toString();
         payload.put("closingDate", closingDateIso);
 
+        String interviewDateIso = interviewDate
+                .atZone(ZoneId.systemDefault())
+                .toInstant()
+                .toString();
+        payload.put("interviewDate", interviewDateIso);
+
         // Build candidate list as per AI spec
         List<Map<String, String>> candidates = apps.stream()
                 .map(app -> {
@@ -136,7 +147,7 @@ public class  AiScreeningClient {
                 .collect(Collectors.toList());
         payload.put("candidates", candidates);
 
-        System.out.println("Payload for AI email generation: " + payload);
+        log.info("Sending payload to AI email generator: " + payload);
 
         // call AI endpoint to generate emails
         EmailGenerationResponseDto response =
@@ -149,8 +160,7 @@ public class  AiScreeningClient {
             throw new RuntimeException("AI email generator failed to respond properly");
         }
 
-        System.out.println("AI email generation response: " + response.getClosing_date()
-                + ", emails count: " + response.getEmails().size());
+        log.info("Received email generation response: " + response);
 
         // Convert emails array → Map<email, EmailContent>
         Map<String, EmailContent> emailMap = new HashMap<>();

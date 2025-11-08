@@ -1,6 +1,7 @@
 package com.recruitment_system.resume_service.repository;
 
 import com.recruitment_system.resume_service.model.Application;
+import com.recruitment_system.resume_service.model.ApplicationStatus;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,6 +15,7 @@ public interface ApplicationRepository extends JpaRepository<Application,Long> {
 
     Optional<List<Application>> findByPostId(Long postId);
     Optional<Application> findByUserEmailAndPostId(String userEmail, Long postId);
+    List<Application> findByUserEmailAndApplicationStatus(String userEmail, ApplicationStatus applicationStatus);
 
     @Modifying
     @Transactional
