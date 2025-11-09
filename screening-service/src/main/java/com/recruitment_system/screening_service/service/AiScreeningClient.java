@@ -67,7 +67,7 @@ public class  AiScreeningClient {
         try {
             // Send POST request
             ResponseEntity<ScreeningApiResponseDto> responseEntity = restTemplate.postForEntity(
-                    "http://15.235.210.227:8000/trigger_pipeline",
+                    "http://15.235.210.227:5000/trigger_pipeline",
                     root,
                     ScreeningApiResponseDto.class
             );
@@ -122,6 +122,8 @@ public class  AiScreeningClient {
         payload.put("jobId", jobPost.getPostId().toString());
         payload.put("jobTitle", jobPost.getTitle());
         payload.put("jobDescription", jobPost.getDescription());
+        payload.put("companyName", jobPost.getCompanyName());
+        payload.put("contactInfo", "Will be added later");
 
         // Convert LocalDateTime to ISO-8601 UTC string
         String closingDateIso = jobPost.getDeadline()
@@ -152,7 +154,7 @@ public class  AiScreeningClient {
         // call AI endpoint to generate emails
         EmailGenerationResponseDto response =
                 restTemplate.postForObject(
-                        "http://15.235.210.227:8000/generate_emails",
+                        "http://15.235.210.227:5000/generate_emails",
                         payload,
                         EmailGenerationResponseDto.class);
 
