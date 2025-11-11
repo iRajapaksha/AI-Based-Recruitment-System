@@ -15,7 +15,6 @@ import com.recruitment_system.screening_service.model.EmailStatus;
 import com.recruitment_system.screening_service.model.ScreeningResult;
 import com.recruitment_system.screening_service.repository.EmailRequestRepository;
 import com.recruitment_system.screening_service.repository.ScreeningResultRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -62,17 +61,17 @@ public class ScreeningService {
 
         for (ScreeningResultDto aiResult : aiResults) {
             ScreeningResult result = ScreeningResult.builder()
-                    .cv_summary(aiResult.getCv_summary())
-                    .github_summary(aiResult.getGithub_summary())
-                    .candidate_name(aiResult.getCandidate_name())
+                    .cvSummary(aiResult.getCv_summary())
+                    .githubSummary(aiResult.getGithub_summary())
+                    .candidateName(aiResult.getCandidate_name())
                     .email(aiResult.getEmail())
                     .score(aiResult.getScore())
                     .jobPostId(jobPostId)
-                    .match_analysis(aiResult.getMatch_analysis())
+                    .matchAnalysis(aiResult.getMatch_analysis())
                     .build();
 
             resultRepository.save(result);
-            log.info("Saved screening result for candidate: " + result.getCandidate_name());
+            log.info("Saved screening result for candidate: " + result.getCandidateName());
             eventProducer.sendSaveScreeningResultEvent(new SaveScreeningResultEvent(
                     jobPostId,
                     result.getEmail(),
@@ -87,18 +86,18 @@ public class ScreeningService {
         List<ScreeningResultDto> dtoResults = new ArrayList<>();
         for(ScreeningResult result : results){
             ScreeningResultDto dto = ScreeningResultDto.builder()
-                    .cv_summary(result.getCv_summary())
-                    .github_summary(result.getGithub_summary())
-                    .candidate_name(result.getCandidate_name())
+                    .cv_summary(result.getCvSummary())
+                    .github_summary(result.getGithubSummary())
+                    .candidate_name(result.getCandidateName())
                     .email(result.getEmail())
-                    .match_analysis(result.getMatch_analysis())
+                    .match_analysis(result.getMatchAnalysis())
                     .score(result.getScore())
                     .build();
             dtoResults.add(dto);
         }
         return dtoResults;
     }
-    @Transactional
+
     public void confirmApplicants(Long jobPostId, ConfirmApplicantsDto confirmApplicantsDto) {
         JobPostResponseDto jobPost =
                 jobPostInterface.getJobPostById(jobPostId).getBody().getData();
@@ -149,6 +148,19 @@ public class ScreeningService {
                     ));
         }
 
+    }
+
+    public ScreeningResultDto getScreeningResult(Long jobpostId, String userEmail) {
+        ScreeningResult result =
+                resultRepository.findByJobPostIdAndEmail(jobpostId,userEmail);
+        return ScreeningResultDto.builder()
+                .candidate_name(result.getCandidateName())
+                .cv_summary(result.getCvSummary())
+                .github_summary(result.getGithubSummary())
+                .email(result.getEmail())
+                .match_analysis(result.getMatchAnalysis())
+                .score(result.getScore())
+                .build();
     }
 }
 

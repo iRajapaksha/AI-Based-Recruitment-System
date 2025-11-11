@@ -35,6 +35,14 @@ public class ScreeningController {
                 screeningService.getRankedList(jobPostId)));
     }
 
+    @GetMapping("/application/{jobpostId}/{userEmail}")
+    public ResponseEntity<ApiResponse<ScreeningResultDto>> getScreeningResult(
+            @PathVariable Long jobpostId, @PathVariable String userEmail) {
+        return ResponseEntity.ok(new ApiResponse<>(true,
+                "Screening result fetched successfully",
+                screeningService.getScreeningResult(jobpostId,userEmail)));
+    }
+
     @PostMapping("/run/{postId}")
     public ResponseEntity<ApiResponse<List<ScreeningResultDto>>> runScreeningManually(
             @PathVariable Long postId) {
