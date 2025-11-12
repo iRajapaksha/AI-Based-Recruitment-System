@@ -19,8 +19,9 @@ AI-Based-Recruitment-System/
 │   └── src/main/resources/
 ├── jobpost-service/
 ├── organization-service/
-├── resume-service/
+├── application-service/
 ├── notification-service/
+├── interview-service/
 ├── screening-service/
 └── docker-compose.yml
 ````
@@ -51,7 +52,7 @@ AI-Based-Recruitment-System/
 | Application Service  | Manages candidate applications |
 | Notification Service | Handles email notifications |
 | Screening Service    | Automated application screening & scheduling |
-| Transcript Service   | Store interview transcript|
+| Interview Service    | Store interview transcript|
 
 
 ### Setup & Run
@@ -80,7 +81,7 @@ mvn spring-boot:run
 cd ../jobpost-service
 mvn spring-boot:run
 
-cd ../resume-service
+cd ../application-service
 mvn spring-boot:run
 
 cd ../organization-service

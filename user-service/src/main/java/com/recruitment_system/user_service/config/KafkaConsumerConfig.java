@@ -36,7 +36,7 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, CreateUserProfileEvent>
-    applicationSavedKafkaListenerFactory() {
+    createUserProfileKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, CreateUserProfileEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(createUserProfileConsumerFactory());

@@ -17,7 +17,7 @@ public class EventListener {
 
     @KafkaListener(topics = "user-profile",
             groupId = "user-service-group",
-            containerFactory = "createUserProfileConsumerFactory")
+            containerFactory = "createUserProfileKafkaListenerContainerFactory")
     public void createUserProfileEvent(CreateUserProfileEvent event){
         log.info("Received CreateUserProfileEvent for email: {}", event.getEmail());
 
