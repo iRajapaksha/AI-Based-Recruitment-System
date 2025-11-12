@@ -20,7 +20,7 @@ public class KafkaConsumerConfig {
     private String bootstrapServers;
 
     @Bean
-    public ConsumerFactory<String, CreateUserProfileEvent> createUserProfileConsumerFactory() {
+    public ConsumerFactory<String, CreateUserProfileEvent> userProfileConsumerFactory() {
         JsonDeserializer<CreateUserProfileEvent> deserializer =
                 new JsonDeserializer<>(CreateUserProfileEvent.class);
         deserializer.addTrustedPackages("com.recruitment_system.event");
@@ -36,10 +36,10 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, CreateUserProfileEvent>
-    createUserProfileKafkaListenerContainerFactory() {
+    userProfileKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, CreateUserProfileEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(createUserProfileConsumerFactory());
+        factory.setConsumerFactory(userProfileConsumerFactory());
         return factory;
     }
 }
