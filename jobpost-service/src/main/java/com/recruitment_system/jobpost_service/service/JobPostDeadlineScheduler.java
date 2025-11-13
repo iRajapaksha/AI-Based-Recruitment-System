@@ -19,7 +19,8 @@ public class JobPostDeadlineScheduler {
 
     @Scheduled(fixedRate = 60000*60) // Check every minute
     public void checkDealines(){
-        List<Long> expiredJobPostIds = jobPostRepository.findByDeadlineBeforeAndIsActive(LocalDateTime.now(),true)
+        List<Long> expiredJobPostIds = jobPostRepository
+                .findByDeadlineBeforeAndIsActive(LocalDateTime.now(),true)
                 .stream()
                 .map(JobPost::getId)
                 .toList();
