@@ -3,6 +3,8 @@ package com.recruitment_system.resume_service.controller;
 import com.recruitment_system.resume_service.dto.ApiResponse;
 import com.recruitment_system.resume_service.dto.ApplicationDto;
 import com.recruitment_system.resume_service.dto.ApplicationResponseDto;
+import com.recruitment_system.resume_service.dto.UpdateStatusDto;
+import com.recruitment_system.resume_service.model.ApplicationStatus;
 import com.recruitment_system.resume_service.service.ApplicationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -63,4 +65,15 @@ public class ApplicationController {
         );
 
     }
+
+    @PatchMapping("/{applicationId}/status")
+    public ResponseEntity<ApiResponse<ApplicationResponseDto>> setApplicationStatus(
+            @PathVariable Long applicationId,
+            @RequestBody UpdateStatusDto updateStatusDto){
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,"Application status updated",
+                        applicationService.setApplicationStatus(applicationId,updateStatusDto))
+        );
+    }
+
 }

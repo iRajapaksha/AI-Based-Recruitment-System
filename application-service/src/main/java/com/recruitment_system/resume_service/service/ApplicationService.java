@@ -1,10 +1,7 @@
 package com.recruitment_system.resume_service.service;
 
 import com.recruitment_system.event.ApplicationSavedEvent;
-import com.recruitment_system.resume_service.dto.ApplicationDto;
-import com.recruitment_system.resume_service.dto.ApplicationResponseDto;
-import com.recruitment_system.resume_service.dto.DocumentDto;
-import com.recruitment_system.resume_service.dto.UserProfileDto;
+import com.recruitment_system.resume_service.dto.*;
 import com.recruitment_system.resume_service.feign.UserInterface;
 import com.recruitment_system.resume_service.model.Application;
 import com.recruitment_system.resume_service.model.ApplicationDocument;
@@ -17,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -127,5 +125,18 @@ public class ApplicationService {
                                 .build())
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    public ApplicationResponseDto setApplicationStatus(Long applicationId, UpdateStatusDto updateStatusDto) {
+       Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() ->new RuntimeException("Application not found for application id: "+ applicationId));
+
+        application.setApplicationStatus(updateStatusDto.getApplicationStatus());
+        applicationRepository.save(application);
+
+        log.info("Updated application ID {} to status {}", applicationId,
+                updateStatusDto.getApplicationStatus());
+
+        return mapToDto(application);
     }
 }
