@@ -191,6 +191,7 @@ services:
     depends_on:
       - mysql-db
       - service-registry
+      - redis
 #      - kafka
     environment:
       - SPRING_PROFILES_ACTIVE=docker
