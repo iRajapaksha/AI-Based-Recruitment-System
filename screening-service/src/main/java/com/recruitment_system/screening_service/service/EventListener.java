@@ -24,6 +24,8 @@ public class EventListener {
         } catch (Exception ex) {
             System.err.println("Error processing screening for job post ID " +
                     jobPostId + ": " + ex.getMessage());
+            throw new RuntimeException("Screening failed: " + ex.getMessage(), ex);
+
         }
 
     }

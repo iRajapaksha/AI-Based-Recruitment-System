@@ -46,9 +46,15 @@ public class ScreeningController {
     @PostMapping("/run/{postId}")
     public ResponseEntity<ApiResponse<List<ScreeningResultDto>>> runScreeningManually(
             @PathVariable Long postId) {
-        return ResponseEntity.ok(new ApiResponse<>(true,
-                "Screening run successfully",
-                screeningService.runScreeningManually(postId)));
+        List<ScreeningResultDto> results = screeningService.runScreeningManually(postId);
+
+        if (results == null || results.isEmpty()) {
+            throw new RuntimeException("Screening failed or returned no results");
+        }
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Screening run successfully", results)
+        );
     }
 
     @PostMapping("/job-post/{jobPostId}/confirm")

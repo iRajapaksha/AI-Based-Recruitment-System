@@ -48,7 +48,7 @@ public class ScreeningService {
         } catch (Exception ex) {
             System.err.println("Error processing manual screening for job post ID " +
                     postId + ": " + ex.getMessage());
-            return new ArrayList<>();
+            throw new RuntimeException("Screening failed: " + ex.getMessage(), ex);
         }
     }
 
@@ -152,7 +152,9 @@ public class ScreeningService {
 
     public ScreeningResultDto getScreeningResult(Long jobpostId, String userEmail) {
         ScreeningResult result =
-                resultRepository.findByJobPostIdAndEmail(jobpostId,userEmail);
+                resultRepository.findByJobPostIdAndEmail(jobpostId,userEmail)
+                        .orElseThrow(()->new RuntimeException("Screening result not found"));
+
         return ScreeningResultDto.builder()
                 .candidate_name(result.getCandidateName())
                 .cv_summary(result.getCvSummary())
