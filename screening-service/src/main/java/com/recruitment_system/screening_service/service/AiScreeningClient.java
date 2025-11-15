@@ -68,7 +68,7 @@ public class  AiScreeningClient {
         try {
             // Send POST request
             ResponseEntity<ScreeningApiResponseDto> responseEntity = restTemplate.postForEntity(
-                    "http://host.docker.internal:5000/trigger_pipeline",
+                    "http://172.17.0.1:5000/trigger_pipeline",
                     root,
                     ScreeningApiResponseDto.class
             );
@@ -76,10 +76,7 @@ public class  AiScreeningClient {
                 throw new RuntimeException("Screening service returned error: " + responseEntity.getStatusCode());
             }
             ScreeningApiResponseDto response = responseEntity.getBody();
-            log.info("Received response from screening service: " + response.toString());
-            log.info("Screening results: " + response.getResults());
-            log.info("Number of screening results: " + (response.getResults() != null ? response.getResults().size() : 0));
-            log.info("Full response details: " + response);
+            log.info("Received response from screening service: " + response.getResults().stream().collect(Collectors.toList()));
 
             if (response != null && response.getSuccess()) {
                 return response.getResults();
@@ -159,7 +156,7 @@ public class  AiScreeningClient {
         // call AI endpoint to generate emails
         EmailGenerationResponseDto response =
                 restTemplate.postForObject(
-                        "http://host.docker.internal:5000/generate_emails",
+                        "http://172.17.0.1:5000/generate_emails",
                         payload,
                         EmailGenerationResponseDto.class);
 
