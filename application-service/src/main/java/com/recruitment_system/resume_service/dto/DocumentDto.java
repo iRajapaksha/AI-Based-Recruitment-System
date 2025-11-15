@@ -1,5 +1,6 @@
 package com.recruitment_system.resume_service.dto;
 
+import com.recruitment_system.resume_service.model.DocumentType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -10,8 +11,10 @@ public class DocumentDto {
     private String id;
 
     @NotBlank(message = "Document type is required")
-    private String type;
+    private DocumentType type;
 
     @NotBlank(message = "Document URL is required")
     private String url;
 }
+
+

@@ -50,7 +50,7 @@ public class ApplicationController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ApplicationResponseDto>> getById(@PathVariable Long id){
         return ResponseEntity.ok(
-                new ApiResponse<>(true,"Get resume by id.",
+                new ApiResponse<>(true,"Get application by id.",
                         applicationService.getById(id))
         );
 
