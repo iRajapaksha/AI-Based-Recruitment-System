@@ -55,6 +55,8 @@ public class ScreeningService {
     List<ScreeningResultDto> processScreening(Long jobPostId) {
         var jobPost = jobPostInterface.getJobPostById(jobPostId).getBody().getData();
         var resumes = applicationInterface.getAllByPostId(jobPostId).getBody().getData();
+        log.info("Processing screening for job post ID: " + jobPostId +
+                " with " + resumes.size() + " applications.");
 
         List<ScreeningResultDto> aiResults = aiScreeningClient.screenedResumes(jobPost, resumes);
         List<ScreeningResult> results = new ArrayList<>();

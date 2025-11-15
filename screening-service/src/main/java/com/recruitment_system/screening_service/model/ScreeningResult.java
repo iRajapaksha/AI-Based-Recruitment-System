@@ -20,7 +20,6 @@ public class ScreeningResult {
     private Long jobPostId;
     private Long applicationId;
     private String candidateName;
-
     // large text fields
     private String cvSummary;
     private String githubSummary;

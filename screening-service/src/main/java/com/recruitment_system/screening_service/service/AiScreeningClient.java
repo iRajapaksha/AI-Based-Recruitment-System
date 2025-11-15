@@ -63,6 +63,7 @@ public class  AiScreeningClient {
         root.put("data", data);
 
         System.out.println("Payload sent to screening service: " + root);
+        log.info("Payload sent to ai screening service: " + root);
 
         try {
             // Send POST request
@@ -75,6 +76,7 @@ public class  AiScreeningClient {
                 throw new RuntimeException("Screening service returned error: " + responseEntity.getStatusCode());
             }
             ScreeningApiResponseDto response = responseEntity.getBody();
+            log.info("Received response from screening service: " + response);
 
             if (response != null && response.getSuccess()) {
                 return response.getResults();
