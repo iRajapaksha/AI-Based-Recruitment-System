@@ -33,7 +33,7 @@ public class JobPostService {
     private final SkillRepository skillRepository;
     private final OrganizationInterface organizationInterface;
 
-    @CachePut(value = "JOBPOST_CACHE", key = "#result.postId")
+   // @CachePut(value = "JOBPOST_CACHE", key = "#result.postId")
     public JobPostResponseDto createJobPost(JobPostCreateDto post, String email) {
         List<Skill> skillEntities = post.getSkills().stream()
                 .map(skill -> skillRepository.findByName(skill.getName())
@@ -162,7 +162,7 @@ public class JobPostService {
                 .collect(Collectors.toList());
     }
 
-    @CacheEvict(value = "JOBPOST_CACHE", key = "#postId")
+  //  @CacheEvict(value = "JOBPOST_CACHE", key = "#postId")
     public JobPostResponseDto deletePostById(Long postId) {
         JobPost post = jobPostRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Job post not found with ID: " + postId));
@@ -182,7 +182,7 @@ public class JobPostService {
         return dto;
     }
 
-    @CachePut(value = "JOBPOST_CACHE", key = "#result.postId")
+   // @CachePut(value = "JOBPOST_CACHE", key = "#result.postId")
     public JobPostResponseDto updateJobPost(Long postId, JobPostUpdateDto dto) {
         JobPost post = jobPostRepository.findById(postId)
                 .orElseThrow(()-> new RuntimeException("Job post not found"));
@@ -214,7 +214,7 @@ public class JobPostService {
     }
 
 
-    @Cacheable(value = "JOBPOST_CACHE", key = "#postId")
+  //  @Cacheable(value = "JOBPOST_CACHE", key = "#postId")
     public JobPostResponseDto getJobPostById(Long postId) {
         JobPost post = jobPostRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Job post not found with ID: " + postId));

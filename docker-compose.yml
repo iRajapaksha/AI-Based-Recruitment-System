@@ -1,18 +1,18 @@
 version: "3.8"
 services:
 
-  redis:
-    image: redis:latest
-    container_name: redis
-    ports:
-      - "6379:6379"
-    networks:
-      - backend
-    healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+#  redis:
+#    image: redis:latest
+#    container_name: redis
+#    ports:
+#      - "6379:6379"
+#    networks:
+#      - backend
+#    healthcheck:
+#      test: [ "CMD", "redis-cli", "ping" ]
+#      interval: 5s
+#      timeout: 5s
+#      retries: 5
 
   # Mysql database service
   mysql-db:
@@ -196,7 +196,6 @@ services:
     depends_on:
       - mysql-db
       - service-registry
-      - redis
 
     environment:
       - SPRING_PROFILES_ACTIVE=docker
@@ -205,9 +204,9 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
-      - SPRING_REDIS_HOST=redis
-      - SPRING_REDIS_PORT=6379
-      - SPRING_CACHE_TYPE=redis
+#      - SPRING_REDIS_HOST=redis
+#      - SPRING_REDIS_PORT=6379
+#      - SPRING_CACHE_TYPE=redis
     networks:
         - backend
 
