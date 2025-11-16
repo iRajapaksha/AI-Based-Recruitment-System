@@ -20,10 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -63,18 +60,34 @@ public class ScreeningService {
         List<ScreeningResult> results = new ArrayList<>();
 
         for (ScreeningResultDto aiResult : aiResults) {
-            ScreeningResult result = ScreeningResult.builder()
-                    .cvSummary(aiResult.getCv_summary())
-                    .githubSummary(aiResult.getGithub_summary())
-                    .candidateName(aiResult.getCandidate_name())
-                    .email(aiResult.getEmail())
-                    .score(aiResult.getScore())
-                    .jobPostId(jobPostId)
-                    .matchAnalysis(aiResult.getMatch_analysis())
-                    .build();
+
+            Optional<ScreeningResult> existing =
+                    resultRepository.findByJobPostIdAndEmail(jobPostId, aiResult.getEmail());
+            ScreeningResult result;
+
+            if (existing.isPresent()) {
+                result = existing.get();
+                result.setCvSummary(aiResult.getCv_summary());
+                result.setGithubSummary(aiResult.getGithub_summary());
+                result.setCandidateName(aiResult.getCandidate_name());
+                result.setScore(aiResult.getScore());
+                result.setMatchAnalysis(aiResult.getMatch_analysis());
+
+                log.info("Updated screening result for candidate: {}", result.getCandidateName());
+            } else {
+                result = ScreeningResult.builder()
+                        .cvSummary(aiResult.getCv_summary())
+                        .githubSummary(aiResult.getGithub_summary())
+                        .candidateName(aiResult.getCandidate_name())
+                        .email(aiResult.getEmail())
+                        .score(aiResult.getScore())
+                        .jobPostId(jobPostId)
+                        .matchAnalysis(aiResult.getMatch_analysis())
+                        .build();
+                log.info("Creating new screening result for candidate: {}" , result.getCandidateName());
+            }
 
             resultRepository.save(result);
-            log.info("Saved screening result for candidate: " + result.getCandidateName());
             eventProducer.sendSaveScreeningResultEvent(new SaveScreeningResultEvent(
                     jobPostId,
                     result.getEmail(),
