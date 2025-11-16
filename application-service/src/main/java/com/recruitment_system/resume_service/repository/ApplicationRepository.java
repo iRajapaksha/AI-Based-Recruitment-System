@@ -16,6 +16,7 @@ public interface ApplicationRepository extends JpaRepository<Application,Long> {
     Optional<List<Application>> findByPostId(Long postId);
     Optional<Application> findByUserEmailAndPostId(String userEmail, Long postId);
     List<Application> findByUserEmailAndApplicationStatus(String userEmail, ApplicationStatus applicationStatus);
+    boolean existsByPostIdAndUserEmail(Long postId, String userEmail);
 
     @Modifying
     @Transactional

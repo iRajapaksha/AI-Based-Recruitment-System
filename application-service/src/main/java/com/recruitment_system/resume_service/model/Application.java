@@ -8,10 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(
+        name = "application",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"postId", "userEmail"})
+        }
+)
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
     private Long postId;
     private String userEmail;

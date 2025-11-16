@@ -28,6 +28,11 @@ public class ApplicationService {
 
     public ApplicationResponseDto saveApplication(ApplicationDto dto){
         UserProfileDto user = userInterface.getMyProfile().getBody().getData();
+        // Validation check
+        if (applicationRepository.existsByPostIdAndUserEmail(dto.getPostId(), user.getEmail())) {
+            throw new RuntimeException("You have already applied for this job post.");
+        }
+
         Application application = Application.builder()
                 .postId(dto.getPostId())
                 .userEmail(user.getEmail())
