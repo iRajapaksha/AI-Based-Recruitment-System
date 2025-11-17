@@ -144,4 +144,17 @@ public class ApplicationService {
 
         return mapToDto(application);
     }
+
+    public ApplicationResponseDto setInterviewScore(Long applicationId, double interviewScore) {
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() ->new RuntimeException("Application not found for application id: "+ applicationId));
+
+        application.setInterviewScore(interviewScore);
+        application.setApplicationStatus(ApplicationStatus.FINISHED);
+        applicationRepository.save(application);
+
+        log.info("Set interview score {} for application ID {}", interviewScore, applicationId);
+        return mapToDto(application);
+
+    }
 }

@@ -76,4 +76,14 @@ public class ApplicationController {
         );
     }
 
+    @PatchMapping("/set-interview-score/{applicationId}")
+    public ResponseEntity<ApiResponse<ApplicationResponseDto>> setInterviewScore(
+            @PathVariable Long applicationId,
+            @RequestBody double interviewScore){
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,"Application interview score updated",
+                        applicationService.setInterviewScore(applicationId,interviewScore))
+        );
+    }
+
 }
