@@ -107,6 +107,17 @@ public class ApplicationService {
 
     }
 
+    @Transactional
+    public ApplicationResponseDto deleteByApplicationId(Long applicationId){
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() ->new RuntimeException("Application not found for application id: "+ applicationId));
+
+        applicationDocumentRepository.deleteByApplicationId(application.getId());
+        applicationRepository.deleteById(application.getId());
+
+        return mapToDto(application);
+    }
+
     private ApplicationResponseDto mapToDto(Application application){
         return ApplicationResponseDto.builder()
                 .applicationId(application.getId())

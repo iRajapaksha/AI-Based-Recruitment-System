@@ -14,4 +14,7 @@ public interface ApplicationDocumentRepository extends JpaRepository<Application
     @Transactional
     @Query("DELETE FROM ApplicationDocument d WHERE d.application.id IN :appIds")
     void deleteByApplicationIdIn(@Param("appIds") List<Long> appIds);
+
+
+    void deleteByApplicationId(@Param("applicationId") Long applicationId);
 }

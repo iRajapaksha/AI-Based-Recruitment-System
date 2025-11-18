@@ -4,6 +4,7 @@ public enum ApplicationStatus {
     PENDING,
     SCREENED,
     INTERVIEW_SCHEDULED,
-    REJECTED,
+    INTERVIEW_STARTED,
+    SELECTED,
     FINISHED
 }

@@ -85,7 +85,7 @@ public class ApplicationController {
                         applicationService.setInterviewScore(applicationId,interviewScore))
         );
     }
-    
+
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<List<ApplicationResponseDto>>> myApplications(Authentication auth){
         String email = auth.getName();
@@ -94,6 +94,15 @@ public class ApplicationController {
                         applicationService.getMyApplications(email))
         );
 
+    }
+
+    @DeleteMapping("/delete/{applicationId}")
+    public ResponseEntity<ApiResponse<ApplicationResponseDto>> deleteByApplicationId(
+            @PathVariable Long applicationId){
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Application deleted",
+                        applicationService.deleteByApplicationId(applicationId))
+        );
     }
 
 }
