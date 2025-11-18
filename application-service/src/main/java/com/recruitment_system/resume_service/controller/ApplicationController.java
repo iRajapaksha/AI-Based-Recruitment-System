@@ -85,5 +85,15 @@ public class ApplicationController {
                         applicationService.setInterviewScore(applicationId,interviewScore))
         );
     }
+    
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<List<ApplicationResponseDto>>> myApplications(Authentication auth){
+        String email = auth.getName();
+        return ResponseEntity.ok(
+                new ApiResponse<>(true,"Saved application list.",
+                        applicationService.getMyApplications(email))
+        );
+
+    }
 
 }

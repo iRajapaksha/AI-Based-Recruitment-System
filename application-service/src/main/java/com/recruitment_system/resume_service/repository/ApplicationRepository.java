@@ -17,7 +17,7 @@ public interface ApplicationRepository extends JpaRepository<Application,Long> {
     Optional<Application> findByUserEmailAndPostId(String userEmail, Long postId);
     List<Application> findByUserEmailAndApplicationStatus(String userEmail, ApplicationStatus applicationStatus);
     boolean existsByPostIdAndUserEmail(Long postId, String userEmail);
-
+    Optional<List<Application>> findByUserEmail(String userEmail);
     @Modifying
     @Transactional
     @Query("DELETE FROM Application r WHERE r.postId = :postId")

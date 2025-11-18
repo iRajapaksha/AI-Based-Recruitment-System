@@ -157,4 +157,10 @@ public class ApplicationService {
         return mapToDto(application);
 
     }
+
+    public List<ApplicationResponseDto> getMyApplications(String email) {
+        List<Application> applications = applicationRepository.findByUserEmail(email)
+                .orElseThrow(()-> new RuntimeException("Applications not found for user email: "+ email));
+        return applications.stream().map(this::mapToDto).toList();
+    }
 }
