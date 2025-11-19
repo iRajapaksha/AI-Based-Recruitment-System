@@ -156,11 +156,11 @@ public class ApplicationService {
         return mapToDto(application);
     }
 
-    public ApplicationResponseDto setInterviewScore(Long applicationId, double interviewScore) {
+    public ApplicationResponseDto setInterviewScore(Long applicationId, InterviewScoreDto interviewScore) {
         Application application = applicationRepository.findById(applicationId)
                 .orElseThrow(() ->new RuntimeException("Application not found for application id: "+ applicationId));
 
-        application.setInterviewScore(interviewScore);
+        application.setInterviewScore(interviewScore.getInterviewScore());
         application.setApplicationStatus(ApplicationStatus.FINISHED);
         applicationRepository.save(application);
 

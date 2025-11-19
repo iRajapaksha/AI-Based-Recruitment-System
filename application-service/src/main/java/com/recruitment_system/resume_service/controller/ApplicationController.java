@@ -1,9 +1,6 @@
 package com.recruitment_system.resume_service.controller;
 
-import com.recruitment_system.resume_service.dto.ApiResponse;
-import com.recruitment_system.resume_service.dto.ApplicationDto;
-import com.recruitment_system.resume_service.dto.ApplicationResponseDto;
-import com.recruitment_system.resume_service.dto.UpdateStatusDto;
+import com.recruitment_system.resume_service.dto.*;
 import com.recruitment_system.resume_service.model.ApplicationStatus;
 import com.recruitment_system.resume_service.service.ApplicationService;
 import jakarta.validation.Valid;
@@ -79,7 +76,7 @@ public class ApplicationController {
     @PatchMapping("/set-interview-score/{applicationId}")
     public ResponseEntity<ApiResponse<ApplicationResponseDto>> setInterviewScore(
             @PathVariable Long applicationId,
-            @RequestBody double interviewScore){
+            @RequestBody InterviewScoreDto interviewScore){
         return ResponseEntity.ok(
                 new ApiResponse<>(true,"Application interview score updated",
                         applicationService.setInterviewScore(applicationId,interviewScore))
