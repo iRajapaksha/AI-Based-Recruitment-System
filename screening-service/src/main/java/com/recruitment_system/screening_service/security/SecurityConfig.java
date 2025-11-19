@@ -26,6 +26,7 @@ public class SecurityConfig {
         http.csrf(csrf-> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                        // .requestMatchers("/users/create","/users/create","/users/{email}").permitAll()
+                        .requestMatchers("/actuator/prometheus", "/actuator/health").permitAll()
                         .requestMatchers("/screening/**").authenticated()
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex

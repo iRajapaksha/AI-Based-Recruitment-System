@@ -12,16 +12,6 @@ services:
       - ../prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - backend
-#    depends_on:
-#      - api-gateway
-#      - service-registry
-#      - user-service
-#      - auth-service
-#      - jobpost-service
-#      - notification-service
-#      - organization-service
-#      - screening-service
-#      - resume-service
 
     # Grafana Configuration
   grafana:
