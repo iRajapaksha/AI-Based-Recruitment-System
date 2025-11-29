@@ -17,8 +17,8 @@ public class JobPost {
     private String workType;
     private String experienceLevel;
     private String employmentType;
-    private double minSalary;
-    private double maxSalary;
+    private Double minSalary;
+    private Double maxSalary;
     private Boolean isActive;
     private Boolean isDraft;
     private String title;

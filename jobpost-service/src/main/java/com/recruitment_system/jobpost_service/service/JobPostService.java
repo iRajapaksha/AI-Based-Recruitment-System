@@ -257,6 +257,8 @@ public class JobPostService {
                                                                 String location,
                                                                 String experienceLevel,
                                                                 String workType,
+                                                                Double minSalary,
+                                                                Double maxSalary,
                                                                 String orderBy,
                                                                 String datePosted,
                                                                 Pageable pageable) {
@@ -280,6 +282,16 @@ public class JobPostService {
             spec = spec.and((root, query, cb) ->
                     cb.equal(root.get("workType"), workType));
         }
+        if (minSalary != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.greaterThanOrEqualTo(root.get("minSalary"), minSalary));
+        }
+
+        if (maxSalary != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.lessThanOrEqualTo(root.get("maxSalary"), maxSalary));
+        }
+
         if (datePosted != null && !datePosted.equalsIgnoreCase("Anytime")) {
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime threshold = switch (datePosted.toLowerCase()) {

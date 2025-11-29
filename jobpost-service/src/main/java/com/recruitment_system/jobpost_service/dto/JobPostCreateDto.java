@@ -35,10 +35,10 @@ public class JobPostCreateDto {
     private String employmentType;
 
     @PositiveOrZero(message = "Minimum salary must be >= 0")
-    private double minSalary;
+    private Double minSalary;
 
     @PositiveOrZero(message = "Maximum salary must be >= 0")
-    private double maxSalary;
+    private Double maxSalary;
 
     @NotBlank(message = "Job title is required")
     @Size(max = 150, message = "Job title cannot exceed 150 characters")

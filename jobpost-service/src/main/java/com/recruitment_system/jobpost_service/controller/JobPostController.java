@@ -104,6 +104,8 @@ public class JobPostController {
             @RequestParam(required = false) String jobTitle,
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String experienceLevel,
+            @RequestParam(required = false) Double minSalary,
+            @RequestParam(required = false) Double maxSalary,
             @RequestParam(required = false) String workType,
             @RequestParam(required = false, defaultValue = "id") String orderBy,
             @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
@@ -118,7 +120,7 @@ public class JobPostController {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
 
         PaginatedResponse<JobPostResponseDto> response =
-                jobPostService.filterJobPosts(jobTitle, location, experienceLevel, workType, orderBy, datePosted, pageable);
+                jobPostService.filterJobPosts(jobTitle, location, experienceLevel, workType,minSalary,maxSalary, orderBy, datePosted, pageable);
 
         return ResponseEntity.ok(
                 ApiResponse.success("Filtered job posts", response)

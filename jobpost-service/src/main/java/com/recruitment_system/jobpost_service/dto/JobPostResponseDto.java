@@ -16,8 +16,8 @@ public class JobPostResponseDto {
     private String workType;
     private String experienceLevel;
     private String employmentType;
-    private double minSalary;
-    private double maxSalary;
+    private Double minSalary;
+    private Double maxSalary;
     private String title;
     private String description;
     private String requirements;
