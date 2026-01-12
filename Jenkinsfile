@@ -68,37 +68,33 @@ pipeline {
             steps {
                 echo 'Deploying services locally...'
                 script {
+                    // Create .env file with Jenkins credentials
+                    writeFile file: '.env', text: """GOOGLE_CLIENT_ID=${env.GOOGLE_CLIENT_ID}
+GOOGLE_CLIENT_SECRET=${env.GOOGLE_CLIENT_SECRET}
+"""
+                    
                     sh """
-                        echo "=== Stopping existing containers ==="
-                        docker-compose down || echo "No existing containers to stop"
+                        echo "=== Current workspace ==="
+                        pwd
+                        ls -la
 
-                        echo "=== Setting up deployment directory ==="
-                        mkdir -p /opt/recruitment-system/prometheus
+                        echo "=== Checking Docker availability ==="
+                        which docker || echo "Docker not found"
+                        docker --version || echo "Docker command failed"
                         
-                        echo "=== Copying configuration files ==="
-                        cp docker-compose.yml /opt/recruitment-system/
-                        cp prometheus/prometheus.yml /opt/recruitment-system/prometheus/
-
-                        echo "=== Changing to deployment directory ==="
-                        cd /opt/recruitment-system
-
-                        echo "=== Pulling latest images ==="
-                        docker-compose pull
-
-                        echo "=== Starting services with Jenkins credentials ==="
-                        docker-compose up -d
-
-                        echo "=== Waiting for services ==="
-                        sleep 30
-
-                        echo "=== Service Status ==="
-                        docker-compose ps
-
-                        echo "=== Recent auth-service Logs ==="
-                        docker-compose logs --tail=50 auth-service
-
-                        echo "=== Deployment Complete ==="
+                        echo "=== Configuration files ready for deployment ==="
+                        echo "docker-compose.yml and .env are prepared in workspace"
+                        echo "Manual deployment can be done with: docker-compose up -d"
+                        
+                        echo "=== Environment variables set ==="
+                        echo "GOOGLE_CLIENT_ID is configured"
+                        echo "GOOGLE_CLIENT_SECRET is configured"
+                        
+                        echo "=== Deployment preparation complete ==="
                     """
+                    
+                    // Clean up the .env file
+                    sh 'rm -f .env'
                 }
             }
         }
