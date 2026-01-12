@@ -69,11 +69,22 @@ pipeline {
         stage('Copy Configuration to VPS') {
             steps {
                 echo 'Copying docker-compose.yml and prometheus.yml to VPS...'
-                sshagent(['vps-ssh']) {
-                    sh """
-                        scp -o StrictHostKeyChecking=no docker-compose.yml ${VPS_USER}@${VPS_IP}:/tmp/
-                        scp -o StrictHostKeyChecking=no prometheus/prometheus.yml ${VPS_USER}@${VPS_IP}:/tmp/
-                    """
+                script {
+                    // Check if files exist
+                    sh 'ls -la docker-compose.yml prometheus/prometheus.yml || echo "Files not found"'
+                    
+                    sshagent(['vps-ssh']) {
+                        sh """
+                            echo "Testing SSH connection..."
+                            ssh -o StrictHostKeyChecking=no -o ConnectTimeout=30 ${VPS_USER}@${VPS_IP} 'echo "SSH connection successful"'
+                            
+                            echo "Copying docker-compose.yml..."
+                            scp -o StrictHostKeyChecking=no -v docker-compose.yml ${VPS_USER}@${VPS_IP}:/tmp/
+                            
+                            echo "Copying prometheus.yml..."
+                            scp -o StrictHostKeyChecking=no -v prometheus/prometheus.yml ${VPS_USER}@${VPS_IP}:/tmp/
+                        """
+                    }
                 }
             }
         }
