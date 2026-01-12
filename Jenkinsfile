@@ -11,7 +11,7 @@ pipeline {
         GOOGLE_CLIENT_ID = credentials('google-oauth-client-id')
         GOOGLE_CLIENT_SECRET = credentials('google-oauth-client-secret')
         DOCKERHUB_USERNAME = 'kavindaagkr'
-        VPS_IP = '15.235.210.227'
+        VPS_IP = '4.194.250.163'
         VPS_USER = 'ubuntu'
     }
     
