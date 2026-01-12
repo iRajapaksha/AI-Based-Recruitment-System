@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'linux' }
+    agent any
     
     tools {
         maven 'Maven-3.9'
@@ -9,9 +9,8 @@ pipeline {
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('dockerhub-credentials')
         GOOGLE_CLIENT_ID = credentials('google-oauth-client-id')
-        GOOGLE_CLIENT_SECRET = credentials('google-oauth-client-secret')        MAIL_USERNAME = credentials('mail-username')
-        MAIL_PASSWORD = credentials('mail-password')
-        DB_PASSWORD = credentials('db-password')        DOCKERHUB_USERNAME = 'kavindaagkr'
+        GOOGLE_CLIENT_SECRET = credentials('google-oauth-client-secret')
+        DOCKERHUB_USERNAME = 'kavindaagkr'
         VPS_IP = '4.194.250.163'
         VPS_USER = 'ubuntu'
     }
@@ -51,14 +50,16 @@ pipeline {
                     ]
                     
                     services.each { service ->
-                        echo "Building ${service}..."
-                        dir(service) {
-                            sh """
-                                mvn clean compile jib:build \
-                                -Djib.to.auth.username=\${DOCKER_HUB_CREDENTIALS_USR} \
-                                -Djib.to.auth.password=\${DOCKER_HUB_CREDENTIALS_PSW} \
-                                -Djib.to.image=${DOCKERHUB_USERNAME}/${service}:latest
-                            """
+                        stage("Build ${service}") {
+                            echo "Building ${service}..."
+                            dir(service) {
+                                sh """
+                                    mvn clean compile jib:build \
+                                    -Djib.to.auth.username=\${DOCKER_HUB_CREDENTIALS_USR} \
+                                    -Djib.to.auth.password=\${DOCKER_HUB_CREDENTIALS_PSW} \
+                                    -Djib.to.image=${DOCKERHUB_USERNAME}/${service}:latest
+                                """
+                            }
                         }
                     }
                 }
@@ -84,9 +85,9 @@ pipeline {
                     // Create .env content with actual values
                     def envFileContent = """GOOGLE_CLIENT_ID=${env.GOOGLE_CLIENT_ID}
 GOOGLE_CLIENT_SECRET=${env.GOOGLE_CLIENT_SECRET}
-MAIL_USERNAME=${env.MAIL_USERNAME}
-MAIL_PASSWORD=${env.MAIL_PASSWORD}
-DB_PASSWORD=${env.DB_PASSWORD}
+MAIL_USERNAME=nayanajith.ishara2541@gmail.com
+MAIL_PASSWORD=ojwnzgvijvrslnod
+DB_PASSWORD=root
 """
                     
                     // Write .env file locally
@@ -115,7 +116,9 @@ echo "=== Moving .env file ==="
 sudo mv /tmp/.env /opt/recruitment-system/.env
 sudo chmod 600 /opt/recruitment-system/.env
 
-echo "=== .env file configured ==="
+echo "=== Verifying .env file ==="
+echo "Checking .env file contents (first 2 lines only for security):"
+sudo head -n 2 /opt/recruitment-system/.env
 
 echo "=== Changing to deployment directory ==="
 cd /opt/recruitment-system
@@ -158,16 +161,8 @@ ENDSSH
             echo 'Pipeline failed! Check console output for details.'
         }
         always {
-            script {
-                try {
-                    if (currentBuild.currentResult != null) {
-                        echo 'Cleaning up workspace...'
-                        cleanWs()
-                    }
-                } catch (Exception e) {
-                    echo "Workspace cleanup skipped: ${e.message}"
-                }
-            }
+            echo 'Cleaning up workspace...'
+            cleanWs()
         }
     }
 }
