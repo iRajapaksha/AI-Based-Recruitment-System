@@ -70,32 +70,32 @@ pipeline {
                 script {
                     sh """
                         echo "=== Stopping existing containers ==="
-                        sudo docker-compose down || echo "No existing containers to stop"
+                        docker-compose down || echo "No existing containers to stop"
 
                         echo "=== Setting up deployment directory ==="
-                        sudo mkdir -p /opt/recruitment-system/prometheus
+                        mkdir -p /opt/recruitment-system/prometheus
                         
                         echo "=== Copying configuration files ==="
-                        sudo cp docker-compose.yml /opt/recruitment-system/
-                        sudo cp prometheus/prometheus.yml /opt/recruitment-system/prometheus/
+                        cp docker-compose.yml /opt/recruitment-system/
+                        cp prometheus/prometheus.yml /opt/recruitment-system/prometheus/
 
                         echo "=== Changing to deployment directory ==="
                         cd /opt/recruitment-system
 
                         echo "=== Pulling latest images ==="
-                        sudo docker-compose pull
+                        docker-compose pull
 
                         echo "=== Starting services with Jenkins credentials ==="
-                        sudo -E docker-compose up -d
+                        docker-compose up -d
 
                         echo "=== Waiting for services ==="
                         sleep 30
 
                         echo "=== Service Status ==="
-                        sudo docker-compose ps
+                        docker-compose ps
 
                         echo "=== Recent auth-service Logs ==="
-                        sudo docker-compose logs --tail=50 auth-service
+                        docker-compose logs --tail=50 auth-service
 
                         echo "=== Deployment Complete ==="
                     """
