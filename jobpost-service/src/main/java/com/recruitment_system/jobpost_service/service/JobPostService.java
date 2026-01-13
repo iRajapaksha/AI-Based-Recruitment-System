@@ -372,10 +372,13 @@ public class JobPostService {
     }
 
     public List<JobPostResponseDto> getMyJobPosts(String email) {
-        List<JobPost> posts = jobPostRepository.findByCreatedBy(email)
-                .orElseThrow(()->new RuntimeException("No active job posts found for user: " + email));
-        return posts.stream().map(this::mapToResponseDto).collect(Collectors.toList());
+        List<JobPost> posts = jobPostRepository.findByCreatedBy(email);
+
+        return posts.stream()
+                .map(this::mapToResponseDto)
+                .collect(Collectors.toList());
     }
+
 
     @Transactional
     public void incrementApplicationCount(Long jobPostId) {
