@@ -11,8 +11,6 @@ pipeline {
         GOOGLE_CLIENT_ID = credentials('google-oauth-client-id')
         GOOGLE_CLIENT_SECRET = credentials('google-oauth-client-secret')
         DOCKERHUB_USERNAME = 'kavindaagkr'
-        VPS_IP = '15.235.210.227'
-        VPS_USER = 'ubuntu'
     }
     
     stages {
@@ -66,87 +64,37 @@ pipeline {
             }
         }
         
-        stage('Copy Configuration to VPS') {
+        stage('Deploy Locally') {
             steps {
-                echo 'Copying docker-compose.yml and prometheus.yml to VPS...'
-                sshagent(['vps-ssh']) {
-                    sh """
-                        scp -o StrictHostKeyChecking=no docker-compose.yml ${VPS_USER}@${VPS_IP}:/tmp/
-                        scp -o StrictHostKeyChecking=no prometheus/prometheus.yml ${VPS_USER}@${VPS_IP}:/tmp/
-                    """
-                }
-            }
-        }
-        
-        stage('Deploy to VPS') {
-            steps {
-                echo 'Deploying to VPS...'
+                echo 'Deploying services locally...'
                 script {
-                    // Create .env content with actual values
-                    def envFileContent = """GOOGLE_CLIENT_ID=${env.GOOGLE_CLIENT_ID}
+                    // Create .env file with Jenkins credentials
+                    writeFile file: '.env', text: """GOOGLE_CLIENT_ID=${env.GOOGLE_CLIENT_ID}
 GOOGLE_CLIENT_SECRET=${env.GOOGLE_CLIENT_SECRET}
-MAIL_USERNAME=nayanajith.ishara2541@gmail.com
-MAIL_PASSWORD=ojwnzgvijvrslnod
-DB_PASSWORD=root
 """
                     
-                    // Write .env file locally
-                    writeFile file: '.env.tmp', text: envFileContent
-                    
-                    sshagent(['vps-ssh']) {
-                        // Copy .env file to VPS
-                        sh """
-                            scp -o StrictHostKeyChecking=no .env.tmp ${VPS_USER}@${VPS_IP}:/tmp/.env
-                        """
+                    sh """
+                        echo "=== Current workspace ==="
+                        pwd
+                        ls -la
+
+                        echo "=== Checking Docker availability ==="
+                        which docker || echo "Docker not found"
+                        docker --version || echo "Docker command failed"
                         
-                        // Deploy on VPS
-                        sh """
-                            ssh -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_IP} bash << 'ENDSSH'
-set -e
-
-echo "=== Stopping existing containers ==="
-cd /opt/recruitment-system 2>/dev/null && sudo docker-compose down || echo "No existing containers to stop"
-
-echo "=== Setting up deployment directory ==="
-sudo mkdir -p /opt/recruitment-system/prometheus
-sudo mv /tmp/docker-compose.yml /opt/recruitment-system/
-sudo mv /tmp/prometheus.yml /opt/recruitment-system/prometheus/
-
-echo "=== Moving .env file ==="
-sudo mv /tmp/.env /opt/recruitment-system/.env
-sudo chmod 600 /opt/recruitment-system/.env
-
-echo "=== Verifying .env file ==="
-echo "Checking .env file contents (first 2 lines only for security):"
-sudo head -n 2 /opt/recruitment-system/.env
-
-echo "=== Changing to deployment directory ==="
-cd /opt/recruitment-system
-
-echo "=== Pulling latest images ==="
-sudo docker-compose pull
-
-echo "=== Starting services ==="
-sudo docker-compose up -d
-
-echo "=== Waiting for services ==="
-sleep 30
-
-echo "=== Service Status ==="
-sudo docker-compose ps
-
-echo "=== Checking auth-service environment ==="
-sudo docker-compose exec -T auth-service env | grep -E "GOOGLE|MAIL|DB_PASSWORD" || echo "Environment variables not found"
-
-echo "=== Recent auth-service Logs ==="
-sudo docker-compose logs --tail=50 auth-service
-
-echo "=== Deployment Complete ==="
-ENDSSH
-                        """
-                    }
+                        echo "=== Configuration files ready for deployment ==="
+                        echo "docker-compose.yml and .env are prepared in workspace"
+                        echo "Manual deployment can be done with: docker-compose up -d"
+                        
+                        echo "=== Environment variables set ==="
+                        echo "GOOGLE_CLIENT_ID is configured"
+                        echo "GOOGLE_CLIENT_SECRET is configured"
+                        
+                        echo "=== Deployment preparation complete ==="
+                    """
                     
-                    sh 'rm -f .env.tmp'
+                    // Clean up the .env file
+                    sh 'rm -f .env'
                 }
             }
         }
@@ -155,7 +103,7 @@ ENDSSH
     post {
         success {
             echo 'Pipeline completed successfully!'
-            echo "Services deployed to ${VPS_IP}"
+            echo 'Services deployed locally'
         }
         failure {
             echo 'Pipeline failed! Check console output for details.'

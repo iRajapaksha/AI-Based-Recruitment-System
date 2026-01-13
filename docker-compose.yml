@@ -123,8 +123,6 @@ services:
         - SPRING_DATASOURCE_PASSWORD=root
         - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
         - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
-        - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-        - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
     networks:
         - backend
 

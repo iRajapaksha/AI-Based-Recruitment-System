@@ -35,3 +35,5 @@ public interface JobPostRepository extends JpaRepository<JobPost,Long>, JpaSpeci
     Optional<List<JobPost>> findByCreatedBy(String email);
 
 }
+
+
