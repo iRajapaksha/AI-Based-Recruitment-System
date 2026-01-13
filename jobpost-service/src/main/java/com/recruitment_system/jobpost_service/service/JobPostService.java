@@ -372,7 +372,7 @@ public class JobPostService {
     }
 
     public List<JobPostResponseDto> getMyJobPosts(String email) {
-        List<JobPost> posts = jobPostRepository.findByCreatedByAndIsActiveTrue(email)
+        List<JobPost> posts = jobPostRepository.findByCreatedBy(email)
                 .orElseThrow(()->new RuntimeException("No active job posts found for user: " + email));
         return posts.stream().map(this::mapToResponseDto).collect(Collectors.toList());
     }
